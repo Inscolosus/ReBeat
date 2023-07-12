@@ -1,0 +1,8 @@
+﻿<settings-container>
+	<checkbox-setting apply-on-change="true" value="Enabled" text="Enable Plugin"/>
+	<horizontal>
+		<text text='Example Slider' align='Center'/>
+	</horizontal>
+	<slider-setting apply-on-change="true" value="Example" text="Angle Leniency" 
+		min="1" max="180" increment="1"/>
+</settings-container>
