@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using HarmonyLib;
 
 namespace BeatSaber5.HarmonyPatches {
@@ -33,13 +29,44 @@ namespace BeatSaber5.HarmonyPatches {
         }
     }
 
-    [HarmonyPatch(typeof(ScoreModel.NoteScoreDefinition), MethodType.Constructor, typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int))]
+    [HarmonyPatch(typeof(ScoreModel), nameof(ScoreModel.GetNoteScoreDefinition))]
     static class AngleScoresPatch {
-        static void Postfix(ref int ___maxCenterDistanceCutScore, ref int ___maxBeforeCutScore, ref int ___maxAfterCutScore) {
+        private static readonly Dictionary<NoteData.ScoringType, ScoreModel.NoteScoreDefinition> NewScoreDefinitions = new Dictionary<NoteData.ScoringType, ScoreModel.NoteScoreDefinition>
+        {
+            {
+                NoteData.ScoringType.Ignore,
+                null
+            },
+            {
+                NoteData.ScoringType.NoScore,
+                new ScoreModel.NoteScoreDefinition(0, 0, 0, 0, 0, 0)
+            },
+            {
+                NoteData.ScoringType.Normal,
+                new ScoreModel.NoteScoreDefinition(25, 0, 30, 0, 20, 0)
+            },
+            {
+                NoteData.ScoringType.SliderHead,
+                new ScoreModel.NoteScoreDefinition(25, 0, 30, 20, 20, 0)
+            },
+            {
+                NoteData.ScoringType.SliderTail,
+                new ScoreModel.NoteScoreDefinition(25, 30, 30, 0, 20, 0)
+            },
+            {
+                NoteData.ScoringType.BurstSliderHead,
+                new ScoreModel.NoteScoreDefinition(25, 0, 30, 0, 0, 0)
+            },
+            {
+                NoteData.ScoringType.BurstSliderElement,
+                new ScoreModel.NoteScoreDefinition(0, 0, 0, 0, 0, 20)
+            }
+        };
+
+        static void Postfix(NoteData.ScoringType scoringType, ref ScoreModel.NoteScoreDefinition __result) {
             if (!Config.Instance.Enabled) return;
-            ___maxCenterDistanceCutScore = 25;
-            ___maxBeforeCutScore = 30;
-            ___maxAfterCutScore = 20;
+
+            __result = NewScoreDefinitions[scoringType];
         }
     }
 
@@ -48,7 +75,7 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(GameplayModifiers), "get_notesUniformScale")]
     static class SmallCubesPatch {
         static void Postfix(ref float __result) {
-            if (__result < 1f && Config.Instance.Enabled) __result = 100f;
+            if (__result < 1f && Config.Instance.Enabled) __result = 3f;
         }
     }
 }

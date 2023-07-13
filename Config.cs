@@ -10,6 +10,7 @@
         public virtual void OnReload() {
             // Do stuff after config is read from disk.
             if (Enabled) {
+                Plugin.Submission = false;
                 BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
             }
         }
@@ -19,6 +20,14 @@
         /// </summary>
         public virtual void Changed() {
             // Do stuff when the config is changed.
+            if (Plugin.Submission && Enabled) {
+                Plugin.Submission = false;
+                BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
+            }
+            else if (!Plugin.Submission && !Enabled) {
+                Plugin.Submission = true;
+                BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
+            }
         }
 
         /// <summary>
