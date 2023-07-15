@@ -121,6 +121,8 @@ namespace BeatSaber5.HarmonyPatches {
         public static int TotalNotes;
 
         static void Postfix(ScoringElement scoringElement) {
+            if (!Config.Instance.Enabled) return;
+
             TotalCutScore += scoringElement.cutScore;
             TotalNotes++;
         }
@@ -129,6 +131,8 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(ScoreController), nameof(ScoreController.Start))]
     static class ScoreControllerStartPatch {
         static void Postfix() {
+            if (!Config.Instance.Enabled) return;
+
             AccScorePatch.TotalCutScore = 0;
             AccScorePatch.TotalNotes = 0;
         }
@@ -137,6 +141,8 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(RelativeScoreAndImmediateRankCounter), "get_relativeScore")]
     static class ScoreDisplayPatch {
         static bool Prefix(ref float __result) {
+            if (!Config.Instance.Enabled) return true;
+
             float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
             __result = AccScorePatch.TotalNotes == 0 ? 1 : relativeScore;
             return false;
