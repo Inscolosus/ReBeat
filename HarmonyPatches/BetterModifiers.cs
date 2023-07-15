@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Reflection.Emit;
 using HarmonyLib;
+using TMPro;
+using UnityEngine;
 
 namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(GameplayModifiers), "get_cutAngleTolerance")]
@@ -112,8 +115,35 @@ namespace BeatSaber5.HarmonyPatches {
         }
     }
 
+    [HarmonyPatch(typeof(ScoreController), nameof(ScoreController.DespawnScoringElement))]
+    static class AccScorePatch {
+        public static int TotalCutScore;
+        public static int TotalNotes;
 
-    
+        static void Postfix(ScoringElement scoringElement) {
+            TotalCutScore += scoringElement.cutScore;
+            TotalNotes++;
+        }
+    }
+
+    [HarmonyPatch(typeof(ScoreController), nameof(ScoreController.Start))]
+    static class ScoreControllerStartPatch {
+        static void Postfix() {
+            AccScorePatch.TotalCutScore = 0;
+            AccScorePatch.TotalNotes = 0;
+        }
+    }
+
+    [HarmonyPatch(typeof(RelativeScoreAndImmediateRankCounter), "get_relativeScore")]
+    static class ScoreDisplayPatch {
+        static bool Prefix(ref float __result) {
+            float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
+            __result = AccScorePatch.TotalNotes == 0 ? 1 : relativeScore;
+            return false;
+        }
+    }
+
+
     [HarmonyPatch(typeof(GameplayModifiers), "get_notesUniformScale")]
     static class SmallCubesPatch {
         static void Postfix(ref float __result) {
