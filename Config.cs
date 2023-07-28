@@ -2,7 +2,14 @@
 	public class Config {
         public static Config Instance;
         public virtual bool Enabled { get; set; } = true;
+        public virtual bool LenientAcc { get; set; } = false;
+        public virtual bool StrictEnergy { get; set; } = false;
         public virtual float Example { get; set; } = 45f;
+        public virtual float ShieldRegen { get; set; } = 20f;
+        public virtual bool EnableShieldCooldown { get; set; } = false;
+        public virtual float ShieldCooldown { get; set; } = 0.5f;
+        public virtual bool ShowComboPercent { get; set; } = true;
+
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).

@@ -26,13 +26,15 @@ namespace BeatSaber5 {
         [OnEnable]
         public void OnEnable() {
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            //BSMLSettings.instance.AddSettingsMenu("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance);
+            BSMLSettings.instance.AddSettingsMenu("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance);
             GameplaySetup.instance.AddTab("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance, MenuType.All);
         }
 
         [OnDisable]
         public void OnDisable() {
             harmony.UnpatchSelf();
+            BSMLSettings.instance.RemoveSettingsMenu(Config.Instance);
+            GameplaySetup.instance.RemoveTab("BeatSaber5");
         }
 
     }

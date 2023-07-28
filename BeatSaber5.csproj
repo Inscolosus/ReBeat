@@ -148,7 +148,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="HarmonyPatches\BetterModifiers.cs" />
+    <Compile Include="HarmonyPatches\NotePatches.cs" />
+    <Compile Include="HarmonyPatches\ComboPatch.cs" />
+    <Compile Include="HarmonyPatches\CutScorePatches.cs" />
+    <Compile Include="HarmonyPatches\EnergyPatches.cs" />
+    <Compile Include="HarmonyPatches\ScorePatches.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
