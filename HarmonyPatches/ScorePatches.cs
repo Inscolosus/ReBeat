@@ -9,7 +9,7 @@ namespace BeatSaber5.HarmonyPatches {
         public static int TotalNotes;
 
         static void Postfix(ScoringElement scoringElement) {
-            if (!Config.Instance.Enabled || scoringElement.noteData.gameplayType == NoteData.GameplayType.Bomb) return;
+            if (scoringElement.noteData.gameplayType == NoteData.GameplayType.Bomb) return;
 
             TotalCutScore += scoringElement.cutScore;
             TotalNotes++;
@@ -22,8 +22,6 @@ namespace BeatSaber5.HarmonyPatches {
     static class ScoreControllerStartPatch {
         public static ScoreController Controller = null;
         static void Postfix(ScoreController __instance) {
-            if (!Config.Instance.Enabled) return;
-
             Controller = __instance;
 
             AccScorePatch.TotalCutScore = 0;
@@ -36,8 +34,6 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(RelativeScoreAndImmediateRankCounter), "get_relativeScore")]
     static class ScoreDisplayPatch {
         static bool Prefix(ref float __result) {
-            if (!Config.Instance.Enabled) return true;
-
             float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
             __result = AccScorePatch.TotalNotes == 0 ? 1 : relativeScore;
             return false;
@@ -55,7 +51,7 @@ namespace BeatSaber5.HarmonyPatches {
             PropertyAccessor<ScoreController, int>.GetGetter("immediateMaxPossibleModifiedScore");
 
         static void Postfix(ref TextMeshProUGUI ____scoreText) {
-            if (!Config.Instance.Enabled || !Config.Instance.ShowComboPercent || ScoreControllerStartPatch.Controller == null) return;
+            if (!Config.Instance.ShowComboPercent || ScoreControllerStartPatch.Controller == null) return;
 
             ____scoreText.text = ((float)ScoreGetter(ref ScoreControllerStartPatch.Controller) / (float)MaxScoreGetter(ref ScoreControllerStartPatch.Controller)).ToString("P");
         }
@@ -66,8 +62,6 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(RankModel), nameof(RankModel.GetRankForScore))]
     static class RankPatch {
         static bool Prefix(ref RankModel.Rank __result) {
-            if (!Config.Instance.Enabled) return true;
-
             float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
 
             if (relativeScore == 1f || AccScorePatch.TotalNotes == 0) __result = RankModel.Rank.SSS;

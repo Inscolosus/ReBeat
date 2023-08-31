@@ -11,30 +11,30 @@ namespace BeatSaber5 {
     public class Plugin {
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
-        internal static Harmony harmony { get; private set; }
-
-        internal static bool Submission { get; set; }
+        internal static Harmony Harmony { get; private set; }
 
         [Init]
         public Plugin(IPALogger logger, IPA.Config.Config config) {
             Instance = this;
             Log = logger;
+            Harmony = new Harmony("Inscolosus.BeatSaber.BeatSaber5");
             Config.Instance = config.Generated<Config>();
-            harmony = new Harmony("Inscolosus.BeatSaber.BeatSaber5");
-        }
 
-        [OnEnable]
-        public void OnEnable() {
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
             BSMLSettings.instance.AddSettingsMenu("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance);
             GameplaySetup.instance.AddTab("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance, MenuType.All);
         }
 
+        [OnEnable]
+        public void OnEnable() {
+            if (!Config.Instance.Enabled) return;
+            Harmony.PatchAll(Assembly.GetExecutingAssembly());
+            BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
+        }
+
         [OnDisable]
         public void OnDisable() {
-            harmony.UnpatchSelf();
-            BSMLSettings.instance.RemoveSettingsMenu(Config.Instance);
-            GameplaySetup.instance.RemoveTab("BeatSaber5");
+            Harmony.UnpatchSelf();
+            BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
         }
 
     }

@@ -3,7 +3,7 @@
   "id": "BeatSaber5",
   "name": "BeatSaber5",
   "author": "Inscolosus",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Beat Saber version 5",
   "gameVersion": "1.25.1",
   "dependsOn": {

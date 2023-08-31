@@ -8,7 +8,8 @@ using UnityEngine.UI;
 namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.Start))]
     static class BatteryLivesPatch {
-        public const int BatteryLives = 9;
+        //public static int StartingHealth; // TODO probably just gonna have to redo the whole health system to make this work
+        public static int BatteryLives = 9; //StartingHealth + EnergyPatch.MaxShield;
         static void Postfix(ref int ____batteryLives) {
             if (!Config.Instance.Enabled) return;
             ____batteryLives = BatteryLives;
@@ -22,7 +23,6 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(GameEnergyCounter.InitData), MethodType.Constructor, new[] { typeof(GameplayModifiers.EnergyType), typeof(bool), typeof(bool), typeof(bool) })]
     static class ForceBatteryEnergyPatch {
         static void Postfix(ref GameplayModifiers.EnergyType ___energyType) {
-            if (!Config.Instance.Enabled) return;
             ___energyType = GameplayModifiers.EnergyType.Battery;
         }
     }
@@ -62,7 +62,7 @@ namespace BeatSaber5.HarmonyPatches {
             }
             else {
                 // there's certainly a better way to do this
-                if (Config.Instance.EnableShieldCooldown && (DateTime.Now - LastMiss).TotalSeconds < Config.Instance.ShieldCooldown) return;
+                if (Config.Instance.ShieldCooldown > 0 && (DateTime.Now - LastMiss).TotalSeconds < Config.Instance.ShieldCooldown) return;
 
                 ShieldProgress += ShieldProgress < (int)Config.Instance.ShieldRegen ? 1 : 0;
                 if (ShieldProgress >= (int)Config.Instance.ShieldRegen && Shield < MaxShield) {
@@ -97,14 +97,16 @@ namespace BeatSaber5.HarmonyPatches {
 
     [HarmonyPatch(typeof(GameEnergyUIPanel), nameof(GameEnergyUIPanel.RefreshEnergyUI))]
     static class EnergyUIPatch {
-        static void Postfix(ref List<Image> ____batteryLifeSegments, ref IGameEnergyCounter ____gameEnergyCounter) {
+        static void Postfix(ref List<Image> ____batteryLifeSegments, ref IGameEnergyCounter ____gameEnergyCounter, ref Image ____energyBar, ref RectTransform ____energyBarRectTransform) {
             if (!Config.Instance.Enabled) return;
 
+            // health bar
             int health = ____gameEnergyCounter.batteryEnergy - EnergyPatch.Shield;
             if (health > 5) health = 5; // bruh
+
             Color healthColor = health > 3 ? Color.green :
-                health > 1 ? Color.yellow :
-                Color.red;
+                    health > 1 ? Color.yellow :
+                    Color.red;
 
             Color shieldColor = EnergyPatch.Shield < EnergyPatch.MaxShield ? Color.blue : Color.cyan;
 
@@ -114,6 +116,20 @@ namespace BeatSaber5.HarmonyPatches {
             for (int i = health; i < ____gameEnergyCounter.batteryEnergy; i++) {
                 ____batteryLifeSegments[i].color = shieldColor;
             }
+            
+
+
+            // recharge bar
+            ____energyBar.gameObject.SetActive(EnergyPatch.Shield < EnergyPatch.MaxShield);
+
+            ____energyBarRectTransform.anchorMax = new Vector2((float)EnergyPatch.ShieldProgress / (Config.Instance.ShieldRegen-1), 1f);
+        }
+    }
+
+    [HarmonyPatch(typeof(GameEnergyUIPanel), nameof(GameEnergyUIPanel.Start))]
+    static class EnergyBarPatch {
+        static void Postfix(ref Image ____energyBar) {
+            ____energyBar.gameObject.transform.position = new Vector3(-0.9539997f, -0.86f, 7.75f);
         }
     }
 }

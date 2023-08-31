@@ -1,13 +1,12 @@
 ﻿<settings-container>
 	<checkbox-setting apply-on-change="true" value="Enabled" text="Enable Plugin"/>
-	<checkbox-setting apply-on-change="true" value="LenientAcc" text="New Acc Zones"/>
-	<checkbox-setting apply-on-change="true" value="StrictEnergy" text="Strict Health"/>
-	<slider-setting apply-on-change="true" value="Example" text="Angle Leniency" 
-		min="1" max="180" increment="1"/>
-	<slider-setting apply-on-change="true" value="ShieldRegen" text="Notes for Shield" 
-		min="5" max="30" increment="1"/>
-  <checkbox-setting apply-on-change="true" value="EnableShieldCooldown" text="Enable Shield Cooldown"/>
   <slider-setting apply-on-change="true" value="ShieldCooldown" text="Shield Cooldown (seconds)"
-                  min="0" max="2" increment="0.1"/>
-  <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show Combo Score %"/>
+                  min="0" max="2" increment="0.05"/>
+  <slider-setting apply-on-change="true" value="ShieldRegen" text="Notes for Shield"
+                  min="5" max="30" increment="1"/>
+  <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show % Instead of Points"/>
+  <checkbox-setting apply-on-change="true" value="StrictEnergy" text="Strict Health"/>
+	<checkbox-setting apply-on-change="true" value="LenientAcc" text="New Acc Zones"/>
+  <slider-setting apply-on-change="true" value="Example" text="Angle Leniency" 
+                  min="1" max="180" increment="1"/>
 </settings-container>

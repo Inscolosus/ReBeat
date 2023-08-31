@@ -3,11 +3,13 @@ using HarmonyLib;
 using IPA.Utilities;
 
 namespace BeatSaber5.HarmonyPatches {
-    [HarmonyPatch(typeof(GameplayModifiers), "get_proMode")]
-    static class ProModePatch {
-        static void Prefix(ref bool ____proMode) {
-            if (!Config.Instance.Enabled) return;
-            ____proMode = true;
+    [HarmonyPatch(typeof(GameNoteController), nameof(GameNoteController.HandleCut))]
+    static class BadCutPatch {
+        static bool Prefix(Saber saber, GameNoteController __instance) {
+            if (!Config.Instance.Enabled) return false; 
+            if (saber.saberType.MatchesColorType(__instance.noteData.colorType)) return true;
+
+            return false;
         }
     }
 
