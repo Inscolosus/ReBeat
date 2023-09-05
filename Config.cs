@@ -16,11 +16,6 @@
             }
         }
 
-        public virtual bool LenientAcc { get; set; } = true;
-        public virtual bool StrictEnergy { get; set; } = true;
-        public virtual float Example { get; set; } = 45f;
-        public virtual float ShieldRegen { get; set; } = 25f;
-        public virtual float ShieldCooldown { get; set; } = 0.2f;
         public virtual bool ShowComboPercent { get; set; } = false;
 
 

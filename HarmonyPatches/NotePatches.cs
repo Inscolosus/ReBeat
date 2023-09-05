@@ -19,7 +19,7 @@ namespace BeatSaber5.HarmonyPatches {
     static class StrictAnglesPatch {
         static void Postfix(ref float __result) {
             if (Config.Instance.Enabled) {
-                __result = __result < 50f ? Config.Instance.Example : 45f;
+                __result = __result < 50f ? 35f : 45f;
             }
         }
     }

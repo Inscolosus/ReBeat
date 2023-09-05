@@ -49,23 +49,21 @@ namespace BeatSaber5.HarmonyPatches {
                 if (Shield > 0) Shield--;
 
 
-                if (Config.Instance.StrictEnergy) {
-                    int energyToSubtract = (int)(-energyChange / 0.15f) - 1; // game will already subtract 1 segment
-                    for (int i = 0; i < energyToSubtract; i++) {
-                        if (Shield < 1) break;
-                        Shield--;
-                    }
-
-                    if (energyToSubtract < 1) return;
-                    EnergySetter(ref __instance, __instance.energy - energyToSubtract * OneEnergySegment);
+                int energyToSubtract = (int)(-energyChange / 0.15f) - 1; // game will already subtract 1 segment
+                for (int i = 0; i < energyToSubtract; i++) {
+                    if (Shield < 1) break;
+                    Shield--;
                 }
+
+                if (energyToSubtract < 1) return;
+                EnergySetter(ref __instance, __instance.energy - energyToSubtract * OneEnergySegment);
             }
             else {
                 // there's certainly a better way to do this
-                if (Config.Instance.ShieldCooldown > 0 && (DateTime.Now - LastMiss).TotalSeconds < Config.Instance.ShieldCooldown) return;
+                if ((DateTime.Now - LastMiss).TotalSeconds < Plugin.ShieldCooldown) return;
 
-                ShieldProgress += ShieldProgress < (int)Config.Instance.ShieldRegen ? 1 : 0;
-                if (ShieldProgress >= (int)Config.Instance.ShieldRegen && Shield < MaxShield) {
+                ShieldProgress += ShieldProgress < Plugin.ShieldRegen ? 1 : 0;
+                if (ShieldProgress >= Plugin.ShieldRegen && Shield < MaxShield) {
                     Shield++;
                     ShieldProgress = 0;
 
@@ -81,8 +79,6 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.HandleNoteWasCut))]
     static class BadCutEnergyPatch {
         static bool Prefix(NoteController noteController, NoteCutInfo noteCutInfo, ref float ____nextFrameEnergyChange) {
-            if (!Config.Instance.Enabled || !Config.Instance.StrictEnergy) return true;
-
             if (noteController.noteData.gameplayType == NoteData.GameplayType.Normal || noteController.noteData.gameplayType == NoteData.GameplayType.BurstSliderHead) {
                 if (noteCutInfo.allIsOK) return true;
                 ____nextFrameEnergyChange -= 0.15f;
@@ -122,7 +118,7 @@ namespace BeatSaber5.HarmonyPatches {
             // recharge bar
             ____energyBar.gameObject.SetActive(EnergyPatch.Shield < EnergyPatch.MaxShield);
 
-            ____energyBarRectTransform.anchorMax = new Vector2((float)EnergyPatch.ShieldProgress / (Config.Instance.ShieldRegen-1), 1f);
+            ____energyBarRectTransform.anchorMax = new Vector2((float)EnergyPatch.ShieldProgress / (Plugin.ShieldRegen-1), 1f);
         }
     }
 

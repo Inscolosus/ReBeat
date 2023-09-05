@@ -13,6 +13,9 @@ namespace BeatSaber5 {
         internal static IPALogger Log { get; private set; }
         internal static Harmony Harmony { get; private set; }
 
+        public const int ShieldRegen = 25;
+        public const float ShieldCooldown = 0.2f;
+
         [Init]
         public Plugin(IPALogger logger, IPA.Config.Config config) {
             Instance = this;

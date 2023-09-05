@@ -4,17 +4,13 @@ using HarmonyLib;
 namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(CutScoreBuffer), nameof(CutScoreBuffer.Init))]
     static class CenterDistanceCutScorePatch {
-        private static readonly float[][] AccLeniency = {
-            new []{4.5f, 8.5f, 11.5f, 13.5f, 14.5f},
-            new []{6.5f, 9.5f, 11.5f, 13.5f, 14.5f}
-        };
         static void Postfix(NoteCutInfo noteCutInfo, ref int ____centerDistanceCutScore) {
             if (!Config.Instance.Enabled) return;
 
             float sectorSize = 0.6f / 29f;
             float cutDistanceToCenter = noteCutInfo.cutDistanceToCenter;
 
-            float[] sectors = Config.Instance.LenientAcc ? AccLeniency[1] : AccLeniency[0];
+            float[] sectors = new[] { 6.5f, 9.5f, 11.5f, 13.5f, 14.5f };
 
             ____centerDistanceCutScore = cutDistanceToCenter < sectorSize * sectors[0] ? 25 :
                 cutDistanceToCenter < sectorSize * sectors[1] ? 20 :
