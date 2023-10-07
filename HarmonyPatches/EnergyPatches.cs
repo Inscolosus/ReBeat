@@ -2,25 +2,43 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using IPA.Utilities;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BeatSaber5.HarmonyPatches {
-    [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.Start))]
-    static class BatteryLivesPatch {
-        //public static int StartingHealth; // TODO probably just gonna have to redo the whole health system to make this work
-        public static int BatteryLives = 9; //StartingHealth + EnergyPatch.MaxShield;
-        static void Postfix(ref int ____batteryLives) {
-            if (!Config.Instance.Enabled) return;
-            ____batteryLives = BatteryLives;
-            EnergyPatch.ShieldProgress = 0;
-            EnergyPatch.Shield = EnergyPatch.MaxShield;
+    [HarmonyPatch(typeof(ComboUIController), nameof(ComboUIController.HandleComboDidChange))]
+    static class MissOnComboTextDebugPatchBrug {
+        static void Prefix(ref TextMeshProUGUI ____comboText) {
+            ____comboText.text = $"Misses: {EnergyPatch.Misses}";
         }
     }
 
+    [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.Start))]
+    static class BatteryLivesPatch {
+        public static int BatteryLives;
 
+        static void Prefix(ref int ____batteryLives) {
+            ____batteryLives = (int)Config.Instance.StartingHealth + EnergyPatch.MaxShield;
+            BatteryLives = ____batteryLives;
 
-    [HarmonyPatch(typeof(GameEnergyCounter.InitData), MethodType.Constructor, new[] { typeof(GameplayModifiers.EnergyType), typeof(bool), typeof(bool), typeof(bool) })]
+            //reset energy values
+            EnergyPatch.Health = (int)Config.Instance.StartingHealth;
+            EnergyPatch.ShieldProgress = 0;
+            EnergyPatch.Shield = EnergyPatch.MaxShield;
+            EnergyPatch.Misses = 0;
+        }
+    }
+
+    [HarmonyPatch(typeof(GameEnergyUIPanel), nameof(GameEnergyUIPanel.CreateUIForBatteryEnergyType))]
+    static class BatteryEnergyBarPatch {
+        static void Prefix(int batteryLives) {
+            Plugin.Log.Debug($"energy bar = {batteryLives}");
+        }
+    }
+
+    [HarmonyPatch(typeof(GameEnergyCounter.InitData), MethodType.Constructor,
+        new[] { typeof(GameplayModifiers.EnergyType), typeof(bool), typeof(bool), typeof(bool) })]
     static class ForceBatteryEnergyPatch {
         static void Postfix(ref GameplayModifiers.EnergyType ___energyType) {
             ___energyType = GameplayModifiers.EnergyType.Battery;
@@ -32,92 +50,128 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.ProcessEnergyChange))]
     static class EnergyPatch {
         internal const int MaxShield = 4;
+        internal static int Health; 
         internal static int Shield;
         internal static int ShieldProgress;
         internal static DateTime LastMiss;
-        internal static readonly float OneEnergySegment = 1f / BatteryLivesPatch.BatteryLives;
+
+        internal static int Misses = 0;
 
         internal static PropertyAccessor<GameEnergyCounter, float>.Setter EnergySetter =
             PropertyAccessor<GameEnergyCounter, float>.GetSetter("energy");
 
-        static void Prefix(float energyChange, GameEnergyCounter __instance) {
-            if (!Config.Instance.Enabled) return;
-            if (energyChange <= 0) {
-                LastMiss = DateTime.Now;
+        static void Prefix(GameEnergyCounter __instance, float energyChange) {
+            energyChange = 0f;
+            EnergySetter.Invoke(ref __instance, 1f);
+
+            if (Misses == 0) return;
+
+            if (Shield > 0 && Shield >= Misses) {
+                Shield -= Misses;
+                Misses = 0;
+            }
+            else if (Shield > 0) {
+                Misses -= Shield;
+                Shield = 0;
+            }
+
+            Health -= Misses;
+            Misses = 0;
+
+
+            if (Health < 1) {
+                energyChange = -1f;
+                EnergySetter.Invoke(ref __instance, 0.1f);
+            }
+        }
+
+        internal static void NoteWasHit() {
+            if (!((DateTime.Now - LastMiss).TotalSeconds > Plugin.ShieldCooldown)) return;
+            if (ShieldProgress < Plugin.ShieldRegen) {
+                ShieldProgress++;
+            }
+
+            if (ShieldProgress >= Plugin.ShieldRegen && Shield < MaxShield) {
+                Shield++;
                 ShieldProgress = 0;
-
-                if (Shield > 0) Shield--;
-
-
-                int energyToSubtract = (int)(-energyChange / 0.15f) - 1; // game will already subtract 1 segment
-                for (int i = 0; i < energyToSubtract; i++) {
-                    if (Shield < 1) break;
-                    Shield--;
-                }
-
-                if (energyToSubtract < 1) return;
-                EnergySetter(ref __instance, __instance.energy - energyToSubtract * OneEnergySegment);
             }
-            else {
-                // there's certainly a better way to do this
-                if ((DateTime.Now - LastMiss).TotalSeconds < Plugin.ShieldCooldown) return;
+        }
 
-                ShieldProgress += ShieldProgress < Plugin.ShieldRegen ? 1 : 0;
-                if (ShieldProgress >= Plugin.ShieldRegen && Shield < MaxShield) {
-                    Shield++;
-                    ShieldProgress = 0;
-
-                    if (__instance.energy + OneEnergySegment > 1f) EnergySetter(ref __instance, 1f);
-                    else EnergySetter(ref __instance, __instance.energy + OneEnergySegment);
-                }
-            }
+        internal static void NoteWasMissed() {
+            LastMiss = DateTime.Now;
+            ShieldProgress = 0;
+            Misses++;
         }
     }
 
 
 
     [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.HandleNoteWasCut))]
-    static class BadCutEnergyPatch {
-        static bool Prefix(NoteController noteController, NoteCutInfo noteCutInfo, ref float ____nextFrameEnergyChange) {
-            if (noteController.noteData.gameplayType == NoteData.GameplayType.Normal || noteController.noteData.gameplayType == NoteData.GameplayType.BurstSliderHead) {
-                if (noteCutInfo.allIsOK) return true;
-                ____nextFrameEnergyChange -= 0.15f;
-                return false;
+    static class NoteWasCutPatch {
+        static void Prefix(NoteController noteController, NoteCutInfo noteCutInfo) {
+            switch (noteController.noteData.gameplayType) {
+                case NoteData.GameplayType.Normal:
+                case NoteData.GameplayType.BurstSliderHead:
+                case NoteData.GameplayType.BurstSliderElement:
+                    if (noteCutInfo.allIsOK) {
+                        EnergyPatch.NoteWasHit();
+                    }
+                    else EnergyPatch.NoteWasMissed();
+                    break;
+
+                case NoteData.GameplayType.Bomb:
+                    EnergyPatch.NoteWasMissed();
+                    break;
             }
 
-            return true;
+
+
         }
     }
 
-
+    [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.HandleNoteWasMissed))]
+    static class NoteWasMissedPatch {
+        static void Prefix(NoteController noteController) {
+            if (noteController.noteData.gameplayType != NoteData.GameplayType.Bomb) 
+                EnergyPatch.NoteWasMissed();
+        }
+    }
 
     [HarmonyPatch(typeof(GameEnergyUIPanel), nameof(GameEnergyUIPanel.RefreshEnergyUI))]
     static class EnergyUIPatch {
+
         static void Postfix(ref List<Image> ____batteryLifeSegments, ref IGameEnergyCounter ____gameEnergyCounter, ref Image ____energyBar, ref RectTransform ____energyBarRectTransform) {
-            if (!Config.Instance.Enabled) return;
-
             // health bar
-            int health = ____gameEnergyCounter.batteryEnergy - EnergyPatch.Shield;
-            if (health > 5) health = 5; // bruh
+            if (EnergyPatch.Health < 1) {
+                foreach (var image in ____batteryLifeSegments) {
+                    image.enabled = false;
+                    ____energyBar.gameObject.SetActive(false);
+                }
+            }
 
-            Color healthColor = health > 3 ? Color.green :
-                    health > 1 ? Color.yellow :
-                    Color.red;
+            Color healthColor = EnergyPatch.Health > 3 ? Color.green :
+                EnergyPatch.Health > 1 ? Color.yellow :
+                Color.red;
 
             Color shieldColor = EnergyPatch.Shield < EnergyPatch.MaxShield ? Color.blue : Color.cyan;
 
-            for (int i = 0; i < health; i++) {
-                ____batteryLifeSegments[i].color = healthColor;
+            for (int i = 0; i < ____batteryLifeSegments.Count; i++) {
+                if (i < EnergyPatch.Health) {
+                    ____batteryLifeSegments[i].enabled = true;
+                    ____batteryLifeSegments[i].color = healthColor;
+                }
+                else if (i < EnergyPatch.Health + EnergyPatch.Shield) {
+                    ____batteryLifeSegments[i].enabled = true;
+                    ____batteryLifeSegments[i].color = shieldColor;
+                }
+                else {
+                    ____batteryLifeSegments[i].enabled = false;
+                }
             }
-            for (int i = health; i < ____gameEnergyCounter.batteryEnergy; i++) {
-                ____batteryLifeSegments[i].color = shieldColor;
-            }
-            
 
 
-            // recharge bar
+             //recharge bar
             ____energyBar.gameObject.SetActive(EnergyPatch.Shield < EnergyPatch.MaxShield);
-
             ____energyBarRectTransform.anchorMax = new Vector2((float)EnergyPatch.ShieldProgress / (Plugin.ShieldRegen-1), 1f);
         }
     }

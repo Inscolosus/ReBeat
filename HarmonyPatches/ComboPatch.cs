@@ -53,7 +53,7 @@ namespace BeatSaber5.HarmonyPatches {
             ____multiplierProgressImage.color = ____multiplierProgressImage.fillAmount >= 0.75f ? Color.cyan : Color.white;
         }
     }
-
+/*
     [HarmonyPatch(typeof(ScoreMultiplierUIController), nameof(ScoreMultiplierUIController.HandleMultiplierDidChange))]
     static class DebugMultiplierTexts {
         static void Postfix(ref TextMeshProUGUI[] ____multiplierTexts) {
@@ -62,5 +62,5 @@ namespace BeatSaber5.HarmonyPatches {
             }
             Plugin.Log.Debug("(end)");
         }
-    }
+    }*/
 }
