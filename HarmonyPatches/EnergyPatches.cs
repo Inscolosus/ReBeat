@@ -7,13 +7,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace BeatSaber5.HarmonyPatches {
-    [HarmonyPatch(typeof(ComboUIController), nameof(ComboUIController.HandleComboDidChange))]
-    static class MissOnComboTextDebugPatchBrug {
-        static void Prefix(ref TextMeshProUGUI ____comboText) {
-            ____comboText.text = $"Misses: {EnergyPatch.Misses}";
-        }
-    }
-
     [HarmonyPatch(typeof(GameEnergyCounter), nameof(GameEnergyCounter.Start))]
     static class BatteryLivesPatch {
         public static int BatteryLives;
