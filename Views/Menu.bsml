@@ -1,4 +1,5 @@
 ﻿<settings-container>
 	<checkbox-setting apply-on-change="true" value="Enabled" text="Enable Plugin"/>
   <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show % Instead of Points"/>
+  <slider-setting apply-on-change="true" value="StartingHealth" text="(Debug) Health" min="1" max="10" increment="1"/>
 </settings-container>
