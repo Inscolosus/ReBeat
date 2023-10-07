@@ -18,6 +18,7 @@
 
         public virtual bool ShowComboPercent { get; set; } = false;
 
+        public const float StartingHealth = 5.0f;
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
