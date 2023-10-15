@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using IPA.Utilities;
 using TMPro;
 
@@ -51,9 +52,31 @@ namespace BeatSaber5.HarmonyPatches {
             PropertyAccessor<ScoreController, int>.GetGetter("immediateMaxPossibleModifiedScore");
 
         static void Postfix(ref TextMeshProUGUI ____scoreText) {
-            if (!Config.Instance.ShowComboPercent || ScoreControllerStartPatch.Controller == null) return;
+            if (ScoreControllerStartPatch.Controller == null) return;
 
-            ____scoreText.text = ((float)ScoreGetter(ref ScoreControllerStartPatch.Controller) / (float)MaxScoreGetter(ref ScoreControllerStartPatch.Controller)).ToString("P");
+            double acc = ((double)AccScorePatch.TotalCutScore / ((double)AccScorePatch.TotalNotes*75d))*100d;
+            int noteCount = TotalNotesPatch.CuttableNotesCount + 1; // +1 ???? why is it one less
+            int misses = EnergyPatch.TotalMisses;
+            int maxCombo = EnergyPatch.HighestCombo;
+
+            double missCountCurve = noteCount / (50 * Math.Pow(misses, 2) + noteCount) * ((50d * noteCount + 1) / (50d * noteCount)) - 1 / (50d * noteCount);
+            double maxComboCurve = Math.Pow(noteCount / ((1 - Math.Sqrt(0.5)) * maxCombo - noteCount), 2) - 1;
+            const double j = 1d / 1020734678369717893d;
+            double accCurve = (6.7 * Math.Pow(acc, 0.25) + j * Math.Pow(acc, 9.8) + Math.Pow(acc, 0.8)) * 0.01;
+
+            int score = AccScorePatch.TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)AccScorePatch.TotalNotes / (double)noteCount));
+
+            ____scoreText.text = !Config.Instance.ShowComboPercent ? 
+                score.ToString("N0").Replace(",", " ") : 
+                (score / (1_000_000d * ((double)AccScorePatch.TotalNotes / (double)noteCount))).ToString("P");
+        }
+    }
+
+    [HarmonyPatch(typeof(BeatmapData), "get_cuttableNotesCount")]
+    static class TotalNotesPatch {
+        internal static int CuttableNotesCount;
+        static void Postfix(int __result) {
+            CuttableNotesCount = __result;
         }
     }
 

@@ -19,6 +19,9 @@ namespace BeatSaber5.HarmonyPatches {
             EnergyPatch.ShieldProgress = 0;
             EnergyPatch.Shield = EnergyPatch.MaxShield;
             EnergyPatch.Misses = 0;
+            EnergyPatch.TotalMisses = 0;
+            EnergyPatch.Combo = 0;
+            EnergyPatch.HighestCombo = 0;
         }
     }
 
@@ -41,7 +44,11 @@ namespace BeatSaber5.HarmonyPatches {
         internal static int ShieldProgress;
         internal static DateTime LastMiss;
 
-        internal static int Misses = 0;
+        internal static int Misses;
+        internal static int TotalMisses;
+
+        internal static int Combo;
+        internal static int HighestCombo;
 
         internal static PropertyAccessor<GameEnergyCounter, float>.Setter EnergySetter =
             PropertyAccessor<GameEnergyCounter, float>.GetSetter("energy");
@@ -81,12 +88,19 @@ namespace BeatSaber5.HarmonyPatches {
                 Shield++;
                 ShieldProgress = 0;
             }
+
+            Combo++;
+            if (Combo > HighestCombo) HighestCombo = Combo;
         }
 
         internal static void NoteWasMissed() {
             LastMiss = DateTime.Now;
             ShieldProgress = 0;
             Misses++;
+
+            // other shit
+            TotalMisses++;
+            Combo = 0;
         }
     }
 
