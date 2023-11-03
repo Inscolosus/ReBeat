@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using HarmonyLib;
 using IPA.Utilities;
 using TMPro;
@@ -43,19 +45,19 @@ namespace BeatSaber5.HarmonyPatches {
 
 
 
-    [HarmonyPatch(typeof(ScoreUIController), nameof(ScoreUIController.UpdateScore))]
-    static class PtsScoreDisplayPatch {
-        private static PropertyAccessor<ScoreController, int>.Getter ScoreGetter =
-            PropertyAccessor<ScoreController, int>.GetGetter("modifiedScore");
-
-        private static PropertyAccessor<ScoreController, int>.Getter MaxScoreGetter =
-            PropertyAccessor<ScoreController, int>.GetGetter("immediateMaxPossibleModifiedScore");
-
-        static void Postfix(ref TextMeshProUGUI ____scoreText) {
+    [HarmonyPatch(typeof(ScoreController), nameof(ScoreController.LateUpdate))]
+    static class ScorePatch {
+        // I think this needs to be a transpiler
+        private static string msg = "";
+        static void Postfix(ref int ____multipliedScore, ref int ____modifiedScore,
+            ref int ____immediateMaxPossibleMultipliedScore, ref int ____immediateMaxPossibleModifiedScore,
+            ref GameplayModifiersModelSO ____gameplayModifiersModel,
+            ref List<GameplayModifierParamsSO> ____gameplayModifierParams,
+            ref IGameEnergyCounter ____gameEnergyCounter, ref Action<int, int> ___scoreDidChangeEvent) {
             if (ScoreControllerStartPatch.Controller == null) return;
 
             double acc = ((double)AccScorePatch.TotalCutScore / ((double)AccScorePatch.TotalNotes*75d))*100d;
-            int noteCount = TotalNotesPatch.CuttableNotesCount + 1; // +1 ???? why is it one less
+            int noteCount = TotalNotesPatch.CuttableNotesCount;
             int misses = EnergyPatch.TotalMisses;
             int maxCombo = EnergyPatch.HighestCombo;
 
@@ -64,19 +66,41 @@ namespace BeatSaber5.HarmonyPatches {
             const double j = 1d / 1020734678369717893d;
             double accCurve = (6.7 * Math.Pow(acc, 0.25) + j * Math.Pow(acc, 9.8) + Math.Pow(acc, 0.8)) * 0.01;
 
-            int score = AccScorePatch.TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)AccScorePatch.TotalNotes / (double)noteCount));
+            int score = AccScorePatch.TotalCutScore == 0 || AccScorePatch.TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)AccScorePatch.TotalNotes / (double)noteCount));
 
-            ____scoreText.text = !Config.Instance.ShowComboPercent ? 
-                score.ToString("N0").Replace(",", " ") : 
-                (score / (1_000_000d * ((double)AccScorePatch.TotalNotes / (double)noteCount))).ToString("P");
+            if (!msg.Equals($"{acc} {noteCount} {misses} {maxCombo} | {missCountCurve} {maxComboCurve} {accCurve} | {score}") && Config.Instance.ScoreDebug) {
+                msg = $"{acc} {noteCount} {misses} {maxCombo} | {missCountCurve} {maxComboCurve} {accCurve} | {score}";
+                Plugin.Log.Debug(msg);
+            }
+
+            ____multipliedScore = score;
+            ____immediateMaxPossibleMultipliedScore = (int)(score / (1_000_000d * ((double)AccScorePatch.TotalNotes / (double)noteCount)));
+
+            float totalMultiplier = ____gameplayModifiersModel.GetTotalMultiplier(____gameplayModifierParams, ____gameEnergyCounter.energy);
+            ____modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(____multipliedScore, totalMultiplier);
+            ____immediateMaxPossibleModifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(____immediateMaxPossibleMultipliedScore, totalMultiplier);
+
+            Action<int, int> action = ___scoreDidChangeEvent;
+            if (action == null) return;
+            action(____multipliedScore, ____modifiedScore);
         }
     }
 
-    [HarmonyPatch(typeof(BeatmapData), "get_cuttableNotesCount")]
+
+    [HarmonyPatch(typeof(RelativeScoreAndImmediateRankCounter), "get_relativeScore")]
+    static class RelativeScoreDisplayPatch {
+        static void Postfix(ref float __result) {
+            if (Config.Instance.ShowComboPercent) {
+                __result = (float)AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(BeatmapDataLoader), nameof(BeatmapDataLoader.GetBeatmapDataBasicInfoFromSaveData))]
     static class TotalNotesPatch {
         internal static int CuttableNotesCount;
-        static void Postfix(int __result) {
-            CuttableNotesCount = __result;
+        static void Postfix(BeatmapSaveDataVersion3.BeatmapSaveData beatmapSaveData) {
+            CuttableNotesCount = beatmapSaveData.colorNotes.Count;
         }
     }
 

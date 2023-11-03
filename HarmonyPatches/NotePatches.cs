@@ -18,9 +18,7 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(GameplayModifiers), "get_cutAngleTolerance")]
     static class StrictAnglesPatch {
         static void Postfix(ref float __result) {
-            if (Config.Instance.Enabled) {
-                __result = __result < 50f ? 35f : 45f;
-            }
+            __result = Config.Instance.ProMode ? 37.5f : 45f;
         }
     }
 

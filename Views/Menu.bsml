@@ -1,4 +1,11 @@
 ﻿<settings-container>
 	<checkbox-setting apply-on-change="true" value="Enabled" text="Enable Plugin"/>
-  <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show % Instead of Points"/>
+  <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show % of max score instead of acc"/>
+  <checkbox-setting apply-on-change="true" value="ScoreDebug" text="Enable Score Debug"/>
+  <horizontal>
+    <text text='Modifiers' align='Center'/>
+  </horizontal>
+  <checkbox-setting apply-on-change="true" value="ProMode" text="Pro Mode"/>
+  <checkbox-setting apply-on-change="true" value="DebugHitbox" text="Debug Hitbox"/>
+  <slider-setting apply-on-change="true" value="DebugHitboxSize" text="changge me :)" min ="0.1" max="4" increment="0.1"/>
 </settings-container>

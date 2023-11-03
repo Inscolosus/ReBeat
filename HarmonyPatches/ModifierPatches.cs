@@ -1,4 +1,5 @@
-﻿using BeatSaberMarkupLanguage;
+﻿using System;
+using BeatSaberMarkupLanguage;
 using HarmonyLib;
 using UnityEngine;
 using TMPro;
@@ -6,13 +7,13 @@ using UnityEngine.UI;
 
 namespace BeatSaber5.HarmonyPatches {
     // force pro mode
-    [HarmonyPatch(typeof(BeatmapObjectsInstaller), nameof(BeatmapObjectsInstaller.InstallBindings))]
+    /*[HarmonyPatch(typeof(BeatmapObjectsInstaller), nameof(BeatmapObjectsInstaller.InstallBindings))]
     public class ProModePatch {
         static void Prefix(ref GameNoteController ____normalBasicNotePrefab, ref GameNoteController ____proModeNotePrefab) {
             if (!Config.Instance.Enabled) return;
             ____normalBasicNotePrefab = ____proModeNotePrefab;
         }
-    }
+    }*/
 
     // COMMENTED OUT CODE IN MASTER :20:
     /*[HarmonyPatch(typeof(SphereCuttableBySaber), nameof(SphereCuttableBySaber.Awake))]
@@ -35,13 +36,16 @@ namespace BeatSaber5.HarmonyPatches {
 
 
     
-    /*[HarmonyPatch(typeof(BoxCuttableBySaber), nameof(BoxCuttableBySaber.Awake))]
+    [HarmonyPatch(typeof(BoxCuttableBySaber), nameof(BoxCuttableBySaber.Awake))]
     static class ColliderBruhPatch {
         public
-            static void Prefix(ref BoxCollider ____collider, BoxCuttableBySaber __instance) {
-            ____collider.size = new Vector3(5f, 5f, 5f);
+            static void Prefix(ref BoxCollider ____collider) {
+            float j = Config.Instance.DebugHitboxSize;
+            ____collider.size = Config.Instance.ProMode ? new Vector3(0.45f, 0.45f, 0.45f) :
+                Config.Instance.DebugHitbox ? new Vector3(j,j,j) : 
+            new Vector3(0.5f, 0.5f, 0.5f);
         }
-    }*/
+    }
 
 
 
@@ -50,6 +54,7 @@ namespace BeatSaber5.HarmonyPatches {
         static void Postfix(ref float ___noteJumpMovementSpeed) {
             if (SongSpeedPatch.SongSpeed <= 1) return;
             ___noteJumpMovementSpeed *= Multiplier(SongSpeedPatch.SongSpeed) / SongSpeedPatch.SongSpeed;
+            if (Config.Instance.ProMode) ___noteJumpMovementSpeed += (float)(Math.Pow(25 - ___noteJumpMovementSpeed, 3) / 900) + 4;
         }
 
         private static float Multiplier(float speed) {

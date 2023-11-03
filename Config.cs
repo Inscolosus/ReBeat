@@ -17,6 +17,10 @@
         }
 
         public virtual bool ShowComboPercent { get; set; } = false;
+        public virtual bool ScoreDebug { get; set; } = false;
+        public virtual bool ProMode { get; set; } = false;
+        public virtual bool DebugHitbox { get; set; } = false;
+        public virtual float DebugHitboxSize { get; set; } = 1;
 
         public const float StartingHealth = 5.0f;
 
