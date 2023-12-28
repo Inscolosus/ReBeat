@@ -63,8 +63,8 @@ namespace BeatSaber5.HarmonyPatches {
 
             double missCountCurve = noteCount / (50 * Math.Pow(misses, 2) + noteCount) * ((50d * noteCount + 1) / (50d * noteCount)) - 1 / (50d * noteCount);
             double maxComboCurve = Math.Pow(noteCount / ((1 - Math.Sqrt(0.5)) * maxCombo - noteCount), 2) - 1;
-            const double j = 1d / 1020734678369717893d;
-            double accCurve = (6.7 * Math.Pow(acc, 0.25) + j * Math.Pow(acc, 9.8) + Math.Pow(acc, 0.8)) * 0.01;
+            //const double j = 1d / 1020734678369717893d;
+            double accCurve = (19.0444 * Math.Tan((Math.PI / 133d) * acc - 4.22) + 35.5) * 0.01; // rip j
 
             int score = AccScorePatch.TotalCutScore == 0 || AccScorePatch.TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)AccScorePatch.TotalNotes / (double)noteCount));
 

@@ -52,9 +52,9 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(BeatmapObjectSpawnController.InitData), MethodType.Constructor, typeof(float), typeof(int), typeof(float), typeof(BeatmapObjectSpawnMovementData.NoteJumpValueType), typeof(float))]
     public class NjsPatch {
         static void Postfix(ref float ___noteJumpMovementSpeed) {
+            if (Config.Instance.ProMode) ___noteJumpMovementSpeed += ((float)Math.Pow(___noteJumpMovementSpeed, 2) + 5f*___noteJumpMovementSpeed + 15f) / (___noteJumpMovementSpeed + 18f) + 11f;
             if (SongSpeedPatch.SongSpeed <= 1) return;
             ___noteJumpMovementSpeed *= Multiplier(SongSpeedPatch.SongSpeed) / SongSpeedPatch.SongSpeed;
-            if (Config.Instance.ProMode) ___noteJumpMovementSpeed += (float)(Math.Pow(25 - ___noteJumpMovementSpeed, 3) / 900) + 4;
         }
 
         private static float Multiplier(float speed) {
