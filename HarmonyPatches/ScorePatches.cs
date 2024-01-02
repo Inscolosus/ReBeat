@@ -56,7 +56,7 @@ namespace BeatSaber5.HarmonyPatches {
             ref IGameEnergyCounter ____gameEnergyCounter, ref Action<int, int> ___scoreDidChangeEvent) {
             if (ScoreControllerStartPatch.Controller == null) return;
 
-            double acc = ((double)AccScorePatch.TotalCutScore / ((double)AccScorePatch.TotalNotes*75d))*100d;
+            double acc = ((double)AccScorePatch.TotalCutScore / ((double)AccScorePatch.TotalNotes*100d))*100d;
             int noteCount = TotalNotesPatch.CuttableNotesCount;
             int misses = EnergyPatch.TotalMisses;
             int maxCombo = EnergyPatch.HighestCombo;
@@ -96,11 +96,11 @@ namespace BeatSaber5.HarmonyPatches {
         }
     }
 
-    [HarmonyPatch(typeof(BeatmapDataLoader), nameof(BeatmapDataLoader.GetBeatmapDataBasicInfoFromSaveData))]
+    [HarmonyPatch(typeof(BeatmapDataLoader), nameof(BeatmapDataLoader.GetBeatmapDataFromSaveData))]
     static class TotalNotesPatch {
         internal static int CuttableNotesCount;
-        static void Postfix(BeatmapSaveDataVersion3.BeatmapSaveData beatmapSaveData) {
-            CuttableNotesCount = beatmapSaveData.colorNotes.Count;
+        static void Postfix(BeatmapData __result) {
+            CuttableNotesCount = __result.cuttableNotesCount;
         }
     }
 
