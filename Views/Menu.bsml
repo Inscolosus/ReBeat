@@ -8,6 +8,12 @@
   </horizontal>
   <checkbox-setting apply-on-change="true" value="ProMode" text="Pro Mode"/>
   <horizontal>
+    <text text='Depleted Shield Color' align='Center' />
+  </horizontal>
+  <slider-setting apply-on-change="true" value="ColorRed" text="Red" min ="0" max="255" increment="1"/>
+  <slider-setting apply-on-change="true" value="ColorGreen" text="Green" min ="0" max="255" increment="1"/>
+  <slider-setting apply-on-change="true" value="ColorBlue" text="Blue" min ="0" max="255" increment="1"/>
+  <horizontal>
     <text text='debung' align='Center' />
   </horizontal>
   <checkbox-setting apply-on-change="true" value="ScoreDebug" text="Enable Score Debug"/>
@@ -15,7 +21,8 @@
   <checkbox-setting apply-on-change="true" value="DebugThree" text="3"/>
   <checkbox-setting apply-on-change="true" value="DebugHitbox" text="Debug Hitbox"/>
   <slider-setting apply-on-change="true" value="DebugHitboxSize" text="changge me :)" min ="0.1" max="4" increment="0.1"/>
-  <slider-setting apply-on-change="true" value="ColorRed" text="Red" min ="0" max="255" increment="1"/>
-  <slider-setting apply-on-change="true" value="ColorGreen" text="Green" min ="0" max="255" increment="1"/>
-  <slider-setting apply-on-change="true" value="ColorBlue" text="Blue" min ="0" max="255" increment="1"/>
+  <horizontal>
+    <text text='other' align='Center' />
+  </horizontal>
+  <slider-setting apply-on-change="true" value="ThisDoesNothing" text="Score Enhancer" min ="1" max="15.9" increment="1.5"/>
 </settings-container>

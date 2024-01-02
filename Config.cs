@@ -29,6 +29,7 @@
         public virtual float ColorRed { get; set; } = 0f;
         public virtual float ColorGreen { get; set; } = 145f;
         public virtual float ColorBlue { get; set; } = 255f;
+        public virtual float ThisDoesNothing { get; set; } = 1f;
 
         public const float StartingHealth = 5.0f;
 
