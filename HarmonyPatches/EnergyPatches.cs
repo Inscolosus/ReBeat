@@ -153,7 +153,9 @@ namespace BeatSaber5.HarmonyPatches {
                 EnergyPatch.Health > 1 ? Color.yellow :
                 Color.red;
 
-            Color shieldColor = EnergyPatch.Shield < EnergyPatch.MaxShield ? Color.blue : Color.cyan;
+            // 0 145 255
+            Color bruhColor = new Color(Config.Instance.ColorRed/255f, Config.Instance.ColorGreen/255f, Config.Instance.ColorBlue/255f);
+            Color shieldColor = EnergyPatch.Shield < EnergyPatch.MaxShield ? bruhColor : Color.cyan;
 
             for (int i = 0; i < ____batteryLifeSegments.Count; i++) {
                 if (i < EnergyPatch.Health) {

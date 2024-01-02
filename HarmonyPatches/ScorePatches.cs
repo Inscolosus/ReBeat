@@ -37,7 +37,7 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(RelativeScoreAndImmediateRankCounter), "get_relativeScore")]
     static class ScoreDisplayPatch {
         static bool Prefix(ref float __result) {
-            float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
+            float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 100f);
             __result = AccScorePatch.TotalNotes == 0 ? 1 : relativeScore;
             return false;
         }
@@ -91,7 +91,7 @@ namespace BeatSaber5.HarmonyPatches {
     static class RelativeScoreDisplayPatch {
         static void Postfix(ref float __result) {
             if (Config.Instance.ShowComboPercent) {
-                __result = (float)AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
+                __result = (float)AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 100f);
             }
         }
     }
@@ -109,7 +109,7 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(RankModel), nameof(RankModel.GetRankForScore))]
     static class RankPatch {
         static bool Prefix(ref RankModel.Rank __result) {
-            float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 75f);
+            float relativeScore = AccScorePatch.TotalCutScore / (AccScorePatch.TotalNotes * 100f);
 
             if (relativeScore == 1f || AccScorePatch.TotalNotes == 0) __result = RankModel.Rank.SSS;
             if (relativeScore > 0.9) { __result = RankModel.Rank.SS; return false; }

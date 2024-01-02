@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using HarmonyLib;
+using UnityEngine;
 
 namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(CutScoreBuffer), nameof(CutScoreBuffer.Init))]
@@ -13,11 +14,11 @@ namespace BeatSaber5.HarmonyPatches {
             float[] sectors = Config.Instance.ProMode ? new[] { 4.5f, 8.5f, 11.5f, 13.5f, 14.5f } : 
                 new[] { 6.5f, 9.5f, 11.5f, 13.5f, 14.5f };
 
-            ____centerDistanceCutScore = cutDistanceToCenter < sectorSize * sectors[0] ? 25 :
-                cutDistanceToCenter < sectorSize * sectors[1] ? 20 :
-                cutDistanceToCenter < sectorSize * sectors[2] ? 15 :
-                cutDistanceToCenter < sectorSize * sectors[3] ? 10 :
-                cutDistanceToCenter < sectorSize * sectors[4] ? 5 : 0;
+            ____centerDistanceCutScore = cutDistanceToCenter < sectorSize * sectors[0] ? 50 :
+                cutDistanceToCenter < sectorSize * sectors[1] ? 40 :
+                cutDistanceToCenter < sectorSize * sectors[2] ? 30 :
+                cutDistanceToCenter < sectorSize * sectors[3] ? 20 :
+                cutDistanceToCenter < sectorSize * sectors[4] ? 10 : 0;
         }
     }
 
@@ -39,6 +40,22 @@ namespace BeatSaber5.HarmonyPatches {
             if (!Config.Instance.Enabled) return;
 
             __result = NewScoreDefinitions[scoringType];
+        }
+    }
+
+    [HarmonyPatch(typeof(SaberSwingRating), nameof(SaberSwingRating.BeforeCutStepRating))]
+    static class BeforeCutAnglePatch {
+        static bool Prefix(float angleDiff, float normalDiff, ref float __result) {
+            __result = angleDiff * (1f - Mathf.Clamp((normalDiff - 75f) / 15f, 0f, 1f)) / Config.Instance.BeforeCutAngle;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(SaberSwingRating), nameof(SaberSwingRating.AfterCutStepRating))]
+    static class AfterCutAnglePatch {
+        static bool Prefix(float angleDiff, float normalDiff, ref float __result) {
+            __result = angleDiff * (1f - Mathf.Clamp((normalDiff - 75f) / 15f, 0f, 1f)) / Config.Instance.AfterCutAngle;
+            return false;
         }
     }
 }
