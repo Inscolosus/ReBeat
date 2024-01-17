@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="HarmonyPatches\GhostNotePatches.cs" />
     <Compile Include="HarmonyPatches\ModifierPatches.cs" />
     <Compile Include="HarmonyPatches\NotePatches.cs" />
     <Compile Include="HarmonyPatches\ComboPatch.cs" />

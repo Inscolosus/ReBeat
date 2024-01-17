@@ -7,6 +7,9 @@
     <text text='Modifiers' align='Center'/>
   </horizontal>
   <checkbox-setting apply-on-change="true" value="ProMode" text="Pro Mode"/>
+  <checkbox-setting apply-on-change="true" value ="Hidden" text="Hidden" />
+  <slider-setting apply-on-change="true" value="FadeEndDistance" text="Fade End" min="1" max ="6" increment="0.1"/>
+  <slider-setting apply-on-change="true" value="FadeDistanceDuration" text="Fade Distance" min="1" max ="10" increment="0.2"/>
   <horizontal>
     <text text='Depleted Shield Color' align='Center' />
   </horizontal>
@@ -25,4 +28,5 @@
     <text text='other' align='Center' />
   </horizontal>
   <slider-setting apply-on-change="true" value="ThisDoesNothing" text="Score Enhancer" min ="1" max="15.9" increment="1.5"/>
+  <slider-setting apply-on-change="true" value="DebugSlider" text="Debug Slider" min ="0" max="0.5" increment="0.01"/>
 </settings-container>

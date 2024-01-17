@@ -33,6 +33,11 @@
 
         public const float StartingHealth = 5.0f;
 
+        public virtual bool Hidden { get; set; } = false;
+        public virtual float FadeEndDistance { get; set; } = 1.5f;
+        public virtual float FadeDistanceDuration { get; set; } = 2.5f;
+        public virtual float DebugSlider { get; set; } = 0f;
+
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
         /// </summary>
