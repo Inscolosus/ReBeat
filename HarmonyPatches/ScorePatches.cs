@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using HarmonyLib;
 using IPA.Utilities;
 using TMPro;
+using UnityEngine;
 
 namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(ScoreController), nameof(ScoreController.DespawnScoringElement))]
@@ -101,6 +103,14 @@ namespace BeatSaber5.HarmonyPatches {
         internal static int CuttableNotesCount;
         static void Postfix(BeatmapData __result) {
             CuttableNotesCount = __result.cuttableNotesCount;
+        }
+    }
+
+    [HarmonyPatch(typeof(BeatmapLevelData), "get_audioClip")]
+    static class SongLengthPatch {
+        internal static float SongLength;
+        static void Postfix(AudioClip __result) {
+            SongLength = __result.length;
         }
     }
 

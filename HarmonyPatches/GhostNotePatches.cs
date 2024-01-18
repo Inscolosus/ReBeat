@@ -5,7 +5,7 @@ namespace BeatSaber5.HarmonyPatches {
     [HarmonyPatch(typeof(DisappearingArrowControllerBase<GameNoteController>), "HandleCubeNoteControllerDidInit")]
     static class GhostNoteMeshEnabler {
         static void Postfix(MeshRenderer ____cubeMeshRenderer) {
-            ____cubeMeshRenderer.enabled = Config.Instance.Hidden;
+            ____cubeMeshRenderer.enabled = true;
         }
     }
 

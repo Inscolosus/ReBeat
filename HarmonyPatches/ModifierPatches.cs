@@ -53,7 +53,8 @@ namespace BeatSaber5.HarmonyPatches {
     public class NjsPatch {
         static void Postfix(ref float ___noteJumpMovementSpeed) {
             if (Config.Instance.DebugTwo) Plugin.Log.Debug($"pre {___noteJumpMovementSpeed}");
-            if (Config.Instance.ProMode) ___noteJumpMovementSpeed += ((float)Math.Pow(___noteJumpMovementSpeed, 2) + 5f*___noteJumpMovementSpeed + 15f) / (___noteJumpMovementSpeed + 18f) + 11f;
+            float baseNjs = ___noteJumpMovementSpeed;
+            if (Config.Instance.ProMode) ___noteJumpMovementSpeed = ((float)Math.Pow(___noteJumpMovementSpeed, 2) + 5f*___noteJumpMovementSpeed + 15f) / (___noteJumpMovementSpeed + 18f) + 11f;
             if (Config.Instance.DebugTwo) Plugin.Log.Debug($"promode {___noteJumpMovementSpeed}");
             if (SongSpeedPatch.SongSpeed <= 1) return;
             ___noteJumpMovementSpeed *= Multiplier(SongSpeedPatch.SongSpeed) / SongSpeedPatch.SongSpeed;

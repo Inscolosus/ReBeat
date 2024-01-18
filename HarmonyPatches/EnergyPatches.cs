@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BeatSaberMarkupLanguage.Tags;
 using HarmonyLib;
 using IPA.Utilities;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace BeatSaber5.HarmonyPatches {
             //reset energy values
             EnergyPatch.Health = (int)Config.StartingHealth; // same here
             EnergyPatch.ShieldProgress = 0;
+            EnergyPatch.ShieldRegen = (int)Math.Round(-20d / (1d + Math.Pow(Math.E, (TotalNotesPatch.CuttableNotesCount / SongLengthPatch.SongLength - 10d) / 2d)) + 30d);
             EnergyPatch.Shield = EnergyPatch.MaxShield;
             EnergyPatch.Misses = 0;
             EnergyPatch.TotalMisses = 0;
@@ -42,6 +44,7 @@ namespace BeatSaber5.HarmonyPatches {
         internal static int Health; 
         internal static int Shield;
         internal static int ShieldProgress;
+        internal static int ShieldRegen;
         internal static DateTime LastMiss;
 
         internal static int Misses;
@@ -80,11 +83,11 @@ namespace BeatSaber5.HarmonyPatches {
 
         internal static void NoteWasHit() {
             if (!((DateTime.Now - LastMiss).TotalSeconds > Plugin.ShieldCooldown)) return;
-            if (ShieldProgress < Plugin.ShieldRegen) {
+            if (ShieldProgress < ShieldRegen) {
                 ShieldProgress++;
             }
 
-            if (ShieldProgress >= Plugin.ShieldRegen && Shield < MaxShield) {
+            if (ShieldProgress >= ShieldRegen && Shield < MaxShield) {
                 Shield++;
                 ShieldProgress = 0;
             }
@@ -174,7 +177,7 @@ namespace BeatSaber5.HarmonyPatches {
 
              //recharge bar
             ____energyBar.gameObject.SetActive(EnergyPatch.Shield < EnergyPatch.MaxShield);
-            ____energyBarRectTransform.anchorMax = new Vector2((float)EnergyPatch.ShieldProgress / (Plugin.ShieldRegen-1), 1f);
+            ____energyBarRectTransform.anchorMax = new Vector2((float)EnergyPatch.ShieldProgress / (EnergyPatch.ShieldRegen-1), 1f);
         }
     }
 
