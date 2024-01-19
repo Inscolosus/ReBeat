@@ -7,6 +7,8 @@
     <text text='Modifiers' align='Center'/>
   </horizontal>
   <checkbox-setting apply-on-change="true" value="ProMode" text="Pro Mode"/>
+  <checkbox-setting apply-on-change="true" value="SameColor" text="Same Color"/>
+  <checkbox-setting apply-on-change="true" value="UseLeftColor" text="Use Left Color"/>
   <slider-setting apply-on-change="true" value="FadeEndDistance" text="Fade End" min="1" max ="6" increment="0.1"/>
   <slider-setting apply-on-change="true" value="FadeDistanceDuration" text="Fade Distance" min="1" max ="10" increment="0.2"/>
   <horizontal>

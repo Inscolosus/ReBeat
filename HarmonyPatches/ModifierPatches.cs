@@ -33,13 +33,51 @@ namespace BeatSaber5.HarmonyPatches {
             }
         }
     }*/
+    
+    // tbh I didn't really realize you could do this :skull:
+    // will have to go back over the code and redo annotations like this for methods in the same class LMAOO
+    [HarmonyPatch(typeof(ColorManager))]
+    static class SameColorPatch {
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ColorManager.ColorForType), typeof(ColorType))]
+        static bool NoteColorPatch(ref Color __result, ref ColorScheme ____colorScheme, ColorType type) {
+            if (!Config.Instance.SameColor) return true;
+            
+            if (type == ColorType.None) __result = Color.black;
+            __result = Config.Instance.UseLeftColor ? __result = ____colorScheme.saberAColor : 
+                __result = ____colorScheme.saberBColor;
+            
+            return false;
+        }
 
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ColorManager.ColorForSaberType))]
+        static bool SaberColorPatch(ref ColorScheme ____colorScheme, ref Color __result) {
+            if (!Config.Instance.SameColor) return true;
 
+            __result = Config.Instance.UseLeftColor ? ____colorScheme.saberAColor : ____colorScheme.saberBColor;
+            return false;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ColorManager.EffectsColorForSaberType))]
+        static bool SaberEffectsColorPatch(ref ColorScheme ____colorScheme, ref Color __result) {
+            if (!Config.Instance.SameColor) return true;
+
+            float h, s, v;
+            if (Config.Instance.UseLeftColor) Color.RGBToHSV(____colorScheme.saberAColor, out h, out s, out v);
+            else Color.RGBToHSV(____colorScheme.saberBColor, out h, out s, out v);
+            
+            __result = Color.HSVToRGB(h, s, 1f);
+            return false;
+        }
+    }
+
+    
     
     [HarmonyPatch(typeof(BoxCuttableBySaber), nameof(BoxCuttableBySaber.Awake))]
     static class ColliderBruhPatch {
-        public
-            static void Prefix(ref BoxCollider ____collider) {
+        public static void Prefix(ref BoxCollider ____collider) {
             float j = Config.Instance.DebugHitboxSize;
             ____collider.size = Config.Instance.ProMode ? new Vector3(0.45f, 0.45f, 0.45f) :
                 Config.Instance.DebugHitbox ? new Vector3(j,j,j) : 

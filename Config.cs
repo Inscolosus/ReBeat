@@ -23,6 +23,8 @@
         public virtual float BeforeCutAngle { get; set; } = 100f;
         public virtual float AfterCutAngle { get; set; } = 60f;
         public virtual bool ProMode { get; set; } = false;
+        public virtual bool SameColor { get; set; } = false;
+        public virtual bool UseLeftColor { get; set; } = false;
         public virtual bool DebugHitbox { get; set; } = false;
         public virtual float DebugHitboxSize { get; set; } = 1;
 
@@ -49,7 +51,7 @@
         /// </summary>
 
 
-        private bool startup = true;
+        private bool startup = true; // TODO: wtf is this 
         public virtual void Changed() {
             // Do stuff when the config is changed.
 
