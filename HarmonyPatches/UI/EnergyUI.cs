@@ -18,13 +18,15 @@ namespace BeatSaber5.HarmonyPatches.UI {
                 }
             }
 
-            Color healthColor = EnergyController.EnergyCounter.Health > 3 ? Color.green :
+            Color healthColor;
+            if (EnergyController.EnergyCounter.MaxHealth == 1) healthColor = Color.green;
+            else healthColor = EnergyController.EnergyCounter.Health > 3 ? Color.green :
                 EnergyController.EnergyCounter.Health > 1 ? Color.yellow :
                 Color.red;
 
             // 0 145 255
             Color bruhColor = new Color(Config.Instance.ColorRed/255f, Config.Instance.ColorGreen/255f, Config.Instance.ColorBlue/255f);
-            Color shieldColor = EnergyController.EnergyCounter.Shield < EnergyCounter.MaxShield ? bruhColor : Color.cyan;
+            Color shieldColor = EnergyController.EnergyCounter.Shield < EnergyController.EnergyCounter.MaxShield ? bruhColor : Color.cyan;
 
             for (int i = 0; i < ____batteryLifeSegments.Count; i++) {
                 if (i < EnergyController.EnergyCounter.Health) {
@@ -42,7 +44,7 @@ namespace BeatSaber5.HarmonyPatches.UI {
 
 
              //recharge bar
-            ____energyBar.gameObject.SetActive(EnergyController.EnergyCounter.Shield < EnergyCounter.MaxShield);
+            ____energyBar.gameObject.SetActive(EnergyController.EnergyCounter.Shield < EnergyController.EnergyCounter.MaxShield);
             ____energyBarRectTransform.anchorMax = new Vector2((float)EnergyController.EnergyCounter.ShieldProgress / (EnergyController.EnergyCounter.ShieldRegen-1), 1f);
         }
         

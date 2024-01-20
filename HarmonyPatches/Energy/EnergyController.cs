@@ -12,8 +12,11 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameEnergyCounter.Start))]
-        static void EnergyCounterStart(ref int ____batteryLives) {
-            EnergyCounter = new EnergyCounter();
+        static void EnergyCounterStart(ref int ____batteryLives, ref GameEnergyCounter.InitData ____initData) {
+            EnergyCounter = ____initData.instaFail ? new EnergyCounter(1, 0) :
+                ForceBatteryEnergy.OneHP ? new EnergyCounter(1, 4) :
+                new EnergyCounter(5, 4);
+            
             ____batteryLives = EnergyCounter.Health + EnergyCounter.MaxShield;
         }
 
