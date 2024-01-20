@@ -1,22 +1,17 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches {
-    [HarmonyPatch(typeof(DisappearingArrowControllerBase<GameNoteController>), "HandleCubeNoteControllerDidInit")]
-    static class GhostNoteMeshEnabler {
-        static void Postfix(MeshRenderer ____cubeMeshRenderer) {
-            ____cubeMeshRenderer.enabled = true;
-        }
-    }
-
-    [HarmonyPatch(typeof(DisappearingArrowControllerBase<GameNoteController>), "HandleNoteMovementNoteDidMoveInJumpPhase")]
-    static class GhostNoteMeshFader {
+namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
+    [HarmonyPatch(typeof(DisappearingArrowControllerBase<GameNoteController>))]
+    class Hidden {
         static readonly IPA.Utilities.FieldAccessor<DisappearingArrowController, GameNoteController>.Accessor ArrowControllerController =
             IPA.Utilities.FieldAccessor<DisappearingArrowController, GameNoteController>.GetAccessor("_gameNoteController");
         static readonly IPA.Utilities.FieldAccessor<CutoutAnimateEffect, CutoutEffect[]>.Accessor CutoutController =
             IPA.Utilities.FieldAccessor<CutoutAnimateEffect, CutoutEffect[]>.GetAccessor("_cuttoutEffects");
 
-        static void Postfix(DisappearingArrowControllerBase<GameNoteController> __instance) {
+        [HarmonyPostfix]
+        [HarmonyPatch("HandleNoteMovementNoteDidMoveInJumpPhase")]
+        static void FadeMesh(DisappearingArrowControllerBase<GameNoteController> __instance) {
             if (!(__instance is DisappearingArrowController dac)) return;
             
             float dist = ArrowControllerController(ref dac).noteMovement.distanceToPlayer;
