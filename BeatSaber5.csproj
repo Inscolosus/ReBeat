@@ -60,6 +60,9 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Colors">
+      <HintPath>E:\Games\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Colors.dll</HintPath>
+    </Reference>
     <Reference Include="GameplayCore">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
       <Private>False</Private>
@@ -115,6 +118,11 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
@@ -153,12 +161,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="HarmonyPatches\ModifierPatches.cs" />
-    <Compile Include="HarmonyPatches\NotePatches.cs" />
-    <Compile Include="HarmonyPatches\ComboPatch.cs" />
-    <Compile Include="HarmonyPatches\CutScorePatches.cs" />
-    <Compile Include="HarmonyPatches\EnergyPatches.cs" />
-    <Compile Include="HarmonyPatches\ScorePatches.cs" />
+    <Compile Include="HarmonyPatches\BeamapData\AudioLength.cs" />
+    <Compile Include="HarmonyPatches\BeamapData\NoteCount.cs" />
+    <Compile Include="HarmonyPatches\Energy\EnergyCounter.cs" />
+    <Compile Include="HarmonyPatches\Energy\EnergyController.cs" />
+    <Compile Include="HarmonyPatches\Energy\ForceBatteryEnergy.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\GameplayModifiersData.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\DisableWrongColorBadCut.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\Modifiers\EnableMeshOnGn.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\Modifiers\Hidden.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\Modifiers\SameColor.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\NjsAdjustment.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\NoteColliderSize.cs" />
+    <Compile Include="HarmonyPatches\Score\AngleCutScore.cs" />
+    <Compile Include="HarmonyPatches\Score\CenterCutScore.cs" />
+    <Compile Include="HarmonyPatches\Score\DisableComboMultiplier.cs" />
+    <Compile Include="HarmonyPatches\Score\ScoreController.cs" />
+    <Compile Include="HarmonyPatches\Score\SetModifiersMultiplier.cs" />
+    <Compile Include="HarmonyPatches\Score\SwingRating.cs" />
+    <Compile Include="HarmonyPatches\UI\DisplayRank.cs" />
+    <Compile Include="HarmonyPatches\UI\EnergyUI.cs" />
+    <Compile Include="HarmonyPatches\UI\RelativeScore.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -177,6 +200,5 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
