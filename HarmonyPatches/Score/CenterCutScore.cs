@@ -10,12 +10,13 @@ namespace BeatSaber5.HarmonyPatches.Score {
             float cutDistanceToCenter = noteCutInfo.cutDistanceToCenter;
 
             float[] sectors = Config.Instance.ProMode ? new[] { 4.5f, 8.5f, 11.5f, 13.5f, 14.5f } : 
+                Config.Instance.EasyMode ? new[] { 7.5f, 10.5f, 12.5f, 13.5f, 14.5f } : 
                 new[] { 6.5f, 9.5f, 11.5f, 13.5f, 14.5f };
 
             ____centerDistanceCutScore = cutDistanceToCenter < sectorSize * sectors[0] ? 50 :
-                cutDistanceToCenter < sectorSize * sectors[1] ? 40 :
-                cutDistanceToCenter < sectorSize * sectors[2] ? 30 :
-                cutDistanceToCenter < sectorSize * sectors[3] ? 20 :
+                cutDistanceToCenter < sectorSize * sectors[1] ? 44 :
+                cutDistanceToCenter < sectorSize * sectors[2] ? 36 :
+                cutDistanceToCenter < sectorSize * sectors[3] ? 22 :
                 cutDistanceToCenter < sectorSize * sectors[4] ? 10 : 0;
         }
     }

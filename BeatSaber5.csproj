@@ -181,6 +181,7 @@
     <Compile Include="HarmonyPatches\Score\SwingRating.cs" />
     <Compile Include="HarmonyPatches\UI\DisplayRank.cs" />
     <Compile Include="HarmonyPatches\UI\EnergyUI.cs" />
+    <Compile Include="HarmonyPatches\UI\Modifiers.cs" />
     <Compile Include="HarmonyPatches\UI\RelativeScore.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

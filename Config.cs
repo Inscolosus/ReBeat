@@ -22,11 +22,10 @@
         public virtual bool DebugThree { get; set; } = false;
         public virtual float BeforeCutAngle { get; set; } = 100f;
         public virtual float AfterCutAngle { get; set; } = 60f;
-        public virtual bool ProMode { get; set; } = false;
-        public virtual bool SameColor { get; set; } = false;
+        internal bool ProMode { get; set; } = false;
+        internal bool SameColor { get; set; } = false;
         public virtual bool UseLeftColor { get; set; } = false;
-        public virtual bool DebugHitbox { get; set; } = false;
-        public virtual float DebugHitboxSize { get; set; } = 1;
+        internal bool EasyMode { get; set; }
 
         public virtual float ColorRed { get; set; } = 0f;
         public virtual float ColorGreen { get; set; } = 145f;

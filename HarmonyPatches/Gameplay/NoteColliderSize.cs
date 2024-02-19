@@ -7,9 +7,8 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(BoxCuttableBySaber.Awake))]
         static void SetColliderSize(ref BoxCollider ____collider) {
-            float j = Config.Instance.DebugHitboxSize;
             ____collider.size = Config.Instance.ProMode ? new Vector3(0.45f, 0.45f, 0.45f) :
-                Config.Instance.DebugHitbox ? new Vector3(j,j,j) : 
+                Config.Instance.EasyMode ? new Vector3(0.8f, 0.5f, 0.8f) : 
             new Vector3(0.5f, 0.5f, 0.5f);
         }
     }
