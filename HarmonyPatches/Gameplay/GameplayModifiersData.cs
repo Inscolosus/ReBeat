@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 
 namespace BeatSaber5.HarmonyPatches.Gameplay {
     [HarmonyPatch(typeof(GameplayModifiers))]
@@ -19,32 +20,25 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
             SongSpeedMultiplier = __result;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameplayModifiers.notesUniformScale), MethodType.Getter)]
-        static bool DisableSmallNotes(ref float __result) { // rip FunnyBigNoteLohl
-            Config.Instance.SameColor = __result < 1f;
-            if (__result < 1f) {
-                __result = 1f;
-                return false;
-            }
-
-            return true;
+        [HarmonyPostfix]
+        [HarmonyPatch(nameof(GameplayModifiers.smallCubes), MethodType.Getter)]
+        static void DisableSmallNotes(ref bool __result) { // rip FunnyBigNoteLohl
+            Config.Instance.SameColor = __result;
+            __result = false;
         }
 
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifiers.noArrows), MethodType.Getter)]
-        static bool DisableNa(ref bool __result) {
+        static void DisableNa(ref bool __result) {
             Config.Instance.EasyMode = __result;
             __result = false;
-            return false;
         }
         
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifiers.proMode), MethodType.Getter)]
-        static bool DisableProMode(ref bool __result) {
+        static void DisableProMode(ref bool __result) {
             Config.Instance.ProMode = __result;
             __result = false;
-            return false;
         }
     }
 }

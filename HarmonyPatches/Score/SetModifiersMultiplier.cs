@@ -6,11 +6,13 @@ namespace BeatSaber5.HarmonyPatches.Score {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifierParamsSO.multiplier), MethodType.Getter)]
         static void Multiplier(ref float __result, GameplayModifierParamsSO __instance) {
+            Plugin.Log.Info(__instance.modifierNameLocalizationKey);
             switch (__instance.modifierNameLocalizationKey) {
                 case "MODIFIER_SLOWER_SONG":     __result = -0.5f; break;
                 case "MODIFIER_FASTER_SONG":     __result = 0.07f; break;
                 case "MODIFIER_SUPER_FAST_SONG": __result = 0.15f; break;
-                case "MODIFIER_STRICT_ANGLES":   __result = 0.11f; break;
+                case "MODIFIER_STRICT_ANGLES":   __result = 0f; break;
+                case "MODIFIER_SMALL_CUBES":     __result = 0.07f; break;
                 case "MODIFIER_GHOST_NOTES":     __result = 0.05f; break;
             }
 
