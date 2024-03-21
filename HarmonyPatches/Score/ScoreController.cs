@@ -40,6 +40,10 @@ namespace BeatSaber5.HarmonyPatches.Score {
 
             int score = TotalCutScore == 0 || TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)TotalNotes / (double)noteCount));
 
+            if (Config.Instance.DebugTwo) {
+                Plugin.Log.Info($"{TotalCutScore} {TotalNotes} | {acc} {noteCount} {misses} {maxCombo} | {missCountCurve} {maxComboCurve} {accCurve} | {score}");
+            }
+
             ____multipliedScore = score;
             ____immediateMaxPossibleMultipliedScore = (int)(1_000_000d * ((double)TotalNotes / (double)noteCount)); 
 

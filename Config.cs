@@ -1,20 +1,9 @@
-﻿namespace BeatSaber5 {
+﻿using System.Reflection;
+
+namespace BeatSaber5 {
 	public class Config {
         public static Config Instance;
-
-        private bool _enabled;
-        public virtual bool Enabled {
-            get => _enabled;
-            set {
-                _enabled = value;
-                if (value) {
-                    Plugin.Instance.OnEnable();
-                }
-                else {
-                    Plugin.Instance.OnDisable();
-                }
-            }
-        }
+        public virtual bool Enabled { get; set; }
 
         public virtual bool ShowComboPercent { get; set; } = false;
         public virtual bool ScoreDebug { get; set; } = false;
@@ -22,10 +11,10 @@
         public virtual bool DebugThree { get; set; } = false;
         public virtual float BeforeCutAngle { get; set; } = 100f;
         public virtual float AfterCutAngle { get; set; } = 60f;
-        internal bool ProMode { get; set; } = false;
-        internal bool SameColor { get; set; } = false;
+        public bool ProMode { get; set; } = false; // might want to move these ones out of the config
+        public bool SameColor { get; set; } = false; // see promode
         public virtual bool UseLeftColor { get; set; } = false;
-        internal bool EasyMode { get; set; }
+        public bool EasyMode { get; set; } // see promode
 
         public virtual float ColorRed { get; set; } = 0f;
         public virtual float ColorGreen { get; set; } = 145f;
@@ -48,12 +37,16 @@
         /// <summary>
         /// Call this to force BSIPA to update the config file. This is also called by BSIPA if it detects the file was modified.
         /// </summary>
-
-
-        private bool startup = true; // TODO: wtf is this 
         public virtual void Changed() {
             // Do stuff when the config is changed.
-
+            if (Enabled) {
+                Plugin.Harmony.PatchAll(Assembly.GetExecutingAssembly());
+                BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
+            }
+            else {
+                Plugin.Harmony.UnpatchSelf();
+                BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
+            }
         }
 
         /// <summary>
