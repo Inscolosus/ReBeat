@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using BeatSaber5.HarmonyPatches.Score;
 
 namespace BeatSaber5 {
 	public class Config {
@@ -9,8 +10,6 @@ namespace BeatSaber5 {
         public virtual bool ScoreDebug { get; set; } = false;
         public virtual bool DebugTwo { get; set; } = false;
         public virtual bool DebugThree { get; set; } = false;
-        public virtual float BeforeCutAngle { get; set; } = 100f;
-        public virtual float AfterCutAngle { get; set; } = 60f;
         public bool ProMode { get; set; } = false; // might want to move these ones out of the config
         public bool SameColor { get; set; } = false; // see promode
         public virtual bool UseLeftColor { get; set; } = false;
@@ -32,6 +31,7 @@ namespace BeatSaber5 {
         /// </summary>
         public virtual void OnReload() {
             // Do stuff after config is read from disk.
+            Changed();
         }
 
         /// <summary>
@@ -44,6 +44,7 @@ namespace BeatSaber5 {
                 BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
             }
             else {
+                SetModifiersMultiplier.ResetMultipliers();
                 Plugin.Harmony.UnpatchSelf();
                 BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
             }

@@ -1,37 +1,39 @@
 ﻿using HarmonyLib;
+using IPA.Utilities;
 
 namespace BeatSaber5.HarmonyPatches.Score {
-    [HarmonyPatch(typeof(GameplayModifierParamsSO))]
+    [HarmonyPatch(typeof(GameplayModifiersPanelController))]
     class SetModifiersMultiplier {
-        [HarmonyPostfix]
-        [HarmonyPatch(nameof(GameplayModifierParamsSO.multiplier), MethodType.Getter)]
-        static void Multiplier(ref float __result, GameplayModifierParamsSO __instance) {
-            Plugin.Log.Info(__instance.modifierNameLocalizationKey);
-            switch (__instance.modifierNameLocalizationKey) {
-                case "MODIFIER_SLOWER_SONG":     __result = -0.5f; break;
-                case "MODIFIER_FASTER_SONG":     __result = 0.07f; break;
-                case "MODIFIER_SUPER_FAST_SONG": __result = 0.15f; break;
-                case "MODIFIER_STRICT_ANGLES":   __result = 0f; break;
-                case "MODIFIER_SMALL_CUBES":     __result = 0.07f; break;
-                case "MODIFIER_GHOST_NOTES":     __result = 0.05f; break;
-            }
-
-            /* MODIFIER_NO_FAIL_ON_0_ENERGY
-             * MODIFIER_NO_BOMBS
-             * MODIFIER_GHOST_NOTES
-             * MODIFIER_PRO_MODE
-             * MODIFIER_SLOWER_SONG
-             * MODIFIER_ONE_LIFE
-             * MODIFIER_NO_OBSTACLES
-             * MODIFIER_DISAPPEARING_ARROWS
-             * MODIFIER_STRICT_ANGLES
-             * MODIFIER_FASTER_SONG
-             * MODIFIER_FOUR_LIVES
-             * MODIFIER_NO_ARROWS
-             * MODIFIER_SMALL_CUBES
-             * MODIFIER_ZEN_MODE
-             * MODIFIER_SUPER_FAST_SONG
-             */
+        private static GameplayModifiersModelSO model;
+        
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(GameplayModifiersPanelController.Awake))]
+        static void SetMultipliers(ref GameplayModifiersPanelController __instance) {
+            model = __instance.GetField<GameplayModifiersModelSO, GameplayModifiersPanelController>("_gameplayModifiersModel");
+            
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_slowerSong").SetField("_multiplier", -0.5f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_fasterSong").SetField("_multiplier", 0.07f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_superFastSong").SetField("_multiplier", 0.15f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_smallCubes").SetField("_multiplier", 0.07f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_ghostNotes").SetField("_multiplier", 0.05f);
         }
+
+        internal static void ResetMultipliers() {
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_slowerSong").SetField("_multiplier", -0.3f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_fasterSong").SetField("_multiplier", 0.08f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_superFastSong").SetField("_multiplier", 0.1f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_smallCubes").SetField("_multiplier", 0f);
+            model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_ghostNotes").SetField("_multiplier", 0.11f);
+        }
+        /* no bombs -0.1
+         * no walls -0.05
+         * na -0.3
+         * gn 0.11
+         * da 0.07
+         * zen mode -1
+         * ss -0.3
+         * fs .08
+         * super fast 0.1
+         */
     }
 }

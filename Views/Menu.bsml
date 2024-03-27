@@ -1,7 +1,5 @@
 ﻿<settings-container>
 	<checkbox-setting apply-on-change="true" value="Enabled" text="Enable Plugin"/>
-  <slider-setting apply-on-change="true" value="BeforeCutAngle" text="Before Cut Angle" min="0" max ="100" increment="1"/>
-  <slider-setting apply-on-change="true" value="AfterCutAngle" text="After Cut Angle" min="0" max ="60" increment="1"/>
   <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show % of max score instead of acc"/>
   <horizontal>
     <text text='Modifiers' align='Center'/>
