@@ -7,6 +7,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
         [HarmonyPostfix]
         [HarmonyPatch("HandleCubeNoteControllerDidInit")]
         static void EnableMesh(MeshRenderer ____cubeMeshRenderer) {
+            if (!Config.Instance.Enabled) return;
             ____cubeMeshRenderer.enabled = true;
         }
     }

@@ -17,6 +17,7 @@ namespace BeatSaber5.HarmonyPatches.Score {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(ScoreModel.GetNoteScoreDefinition))]
         static void ReplaceScoreDefinition(NoteData.ScoringType scoringType, ref ScoreModel.NoteScoreDefinition __result) {
+            if (!Config.Instance.Enabled) return;
             __result = NewScoreDefinitions[scoringType];
         }
     }

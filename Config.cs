@@ -1,10 +1,36 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using BeatSaber5.HarmonyPatches.Score;
 
 namespace BeatSaber5 {
 	public class Config {
         public static Config Instance;
-        public virtual bool Enabled { get; set; }
+        private bool _enabled;
+
+        public virtual bool Enabled {
+            get => _enabled;
+            set {
+                if (value) {
+                    BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
+                    try {
+                        SetModifiersMultiplier.SetMultipliers();
+                    }
+                    catch (NullReferenceException e) {
+                        // startup; ignore
+                    }
+                }
+                else {
+                    BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
+                    try {
+                        SetModifiersMultiplier.ResetMultipliers();
+                    }
+                    catch (NullReferenceException e) {
+                        // startup; ignore
+                    }
+                }
+                _enabled = value;
+            }
+        }
 
         public virtual bool ShowComboPercent { get; set; } = false;
         public virtual bool ScoreDebug { get; set; } = false;
@@ -39,15 +65,6 @@ namespace BeatSaber5 {
         /// </summary>
         public virtual void Changed() {
             // Do stuff when the config is changed.
-            if (Enabled) {
-                Plugin.Harmony.PatchAll(Assembly.GetExecutingAssembly());
-                BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
-            }
-            else {
-                SetModifiersMultiplier.ResetMultipliers();
-                Plugin.Harmony.UnpatchSelf();
-                BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
-            }
         }
 
         /// <summary>

@@ -7,6 +7,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         [HarmonyPostfix]
         [HarmonyPatch(MethodType.Constructor, typeof(float), typeof(int), typeof(float), typeof(BeatmapObjectSpawnMovementData.NoteJumpValueType), typeof(float))]
         static void SetNjs(ref float ___noteJumpMovementSpeed) {
+            if (!Config.Instance.Enabled) return;
             float baseNjs = ___noteJumpMovementSpeed;
             if (Config.Instance.ProMode) ___noteJumpMovementSpeed = ((float)Math.Pow(___noteJumpMovementSpeed, 2) + 5f*___noteJumpMovementSpeed + 15f) / (___noteJumpMovementSpeed + 18f) + 11f;
             if (GameplayModifiersData.SongSpeedMultiplier <= 1) return;

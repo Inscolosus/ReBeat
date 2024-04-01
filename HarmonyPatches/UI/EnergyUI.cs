@@ -10,6 +10,7 @@ namespace BeatSaber5.HarmonyPatches.UI {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(GameEnergyUIPanel.RefreshEnergyUI))]
         static void RefreshEnergyUI(ref List<Image> ____batteryLifeSegments, ref IGameEnergyCounter ____gameEnergyCounter, ref Image ____energyBar, ref RectTransform ____energyBarRectTransform) {
+            if (!Config.Instance.Enabled) return;
             // health bar
             if (EnergyController.EnergyCounter.Health < 1) {
                 foreach (var image in ____batteryLifeSegments) {
@@ -51,6 +52,7 @@ namespace BeatSaber5.HarmonyPatches.UI {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(GameEnergyUIPanel.Start))]
         static void MoveNormalEnergyBar(ref Image ____energyBar) {
+            if (!Config.Instance.Enabled) return;
             ____energyBar.gameObject.transform.position = new Vector3(-0.9539997f, -0.86f, 7.75f);
         }
     }

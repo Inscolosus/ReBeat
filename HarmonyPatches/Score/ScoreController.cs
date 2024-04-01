@@ -16,6 +16,7 @@ namespace BeatSaber5.HarmonyPatches.Score {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(global::ScoreController.Start))]
         static void OnStart(ScoreController __instance) {
+            if (!Config.Instance.Enabled) return;
             TotalCutScore = 0;
             TotalNotes = 0;
         }
@@ -27,6 +28,7 @@ namespace BeatSaber5.HarmonyPatches.Score {
             ref GameplayModifiersModelSO ____gameplayModifiersModel,
             ref List<GameplayModifierParamsSO> ____gameplayModifierParams,
             ref IGameEnergyCounter ____gameEnergyCounter, ref Action<int, int> ___scoreDidChangeEvent) {
+            if (!Config.Instance.Enabled) return;
 
             double acc = ((double)TotalCutScore / ((double)TotalNotes*100d))*100d;
             int noteCount = NoteCount.Count;
@@ -62,6 +64,7 @@ namespace BeatSaber5.HarmonyPatches.Score {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(global::ScoreController.DespawnScoringElement))]
         static void HandleScoringElement(ScoringElement scoringElement) {
+            if (!Config.Instance.Enabled) return;
             if (scoringElement.noteData.gameplayType == NoteData.GameplayType.Bomb) return;
 
             TotalCutScore += scoringElement.cutScore;

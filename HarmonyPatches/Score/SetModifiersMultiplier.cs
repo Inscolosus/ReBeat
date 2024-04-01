@@ -8,9 +8,17 @@ namespace BeatSaber5.HarmonyPatches.Score {
         
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameplayModifiersPanelController.Awake))]
-        static void SetMultipliers(ref GameplayModifiersPanelController __instance) {
+        static void UpdateModel(ref GameplayModifiersPanelController __instance) {
             model = __instance.GetField<GameplayModifiersModelSO, GameplayModifiersPanelController>("_gameplayModifiersModel");
-            
+            if (Config.Instance.Enabled) {
+                SetMultipliers();
+            }
+            else {
+                ResetMultipliers();
+            }
+        }
+
+        internal static void SetMultipliers() {
             model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_slowerSong").SetField("_multiplier", -0.5f);
             model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_fasterSong").SetField("_multiplier", 0.07f);
             model.GetField<GameplayModifierParamsSO, GameplayModifiersModelSO>("_superFastSong").SetField("_multiplier", 0.15f);

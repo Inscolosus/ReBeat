@@ -6,6 +6,7 @@ namespace BeatSaber5.HarmonyPatches.UI {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(RankModel.GetRankForScore))]
         static bool Prefix(ref RankModel.Rank __result) {
+            if (!Config.Instance.Enabled) return true;
             float relativeScore = Score.ScoreController.TotalCutScore / (Score.ScoreController.TotalNotes * 100f);
 
             if (relativeScore == 1f || Score.ScoreController.TotalNotes == 0) __result = RankModel.Rank.SSS;

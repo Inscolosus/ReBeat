@@ -7,7 +7,7 @@ using IPA.Config.Stores;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BeatSaber5 {
-    [Plugin(RuntimeOptions.DynamicInit)] // TODO: change to single start and just check if plugin is enabled on patches hahaball
+    [Plugin(RuntimeOptions.SingleStartInit)] // TODO: change to single start and just check if plugin is enabled on patches hahaball
     public class Plugin {
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
@@ -20,17 +20,19 @@ namespace BeatSaber5 {
             Log = logger;
             Harmony = new Harmony("Inscolosus.BeatSaber.BeatSaber5");
             Config.Instance = config.Generated<Config>();
+            
+        }
 
+        [OnStart]
+        public void OnEnable() {
+            Harmony.PatchAll(Assembly.GetExecutingAssembly());
             BSMLSettings.instance.AddSettingsMenu("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance);
             GameplaySetup.instance.AddTab("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance, MenuType.All);
         }
 
-        [OnEnable]
-        public void OnEnable() {
-        }
-
-        [OnDisable]
+        [OnExit]
         public void OnDisable() {
+            Harmony.UnpatchSelf();
         }
     }
 }

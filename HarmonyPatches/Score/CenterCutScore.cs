@@ -6,6 +6,7 @@ namespace BeatSaber5.HarmonyPatches.Score {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(CutScoreBuffer.Init))]
         static void SetCenterCutScore(NoteCutInfo noteCutInfo, ref int ____centerDistanceCutScore) {
+            if (!Config.Instance.Enabled) return;
             float sectorSize = 0.6f / 29f;
             float cutDistanceToCenter = noteCutInfo.cutDistanceToCenter;
 

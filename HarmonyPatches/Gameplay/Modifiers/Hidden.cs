@@ -12,6 +12,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
         [HarmonyPostfix]
         [HarmonyPatch("HandleNoteMovementNoteDidMoveInJumpPhase")]
         static void FadeMesh(DisappearingArrowControllerBase<GameNoteController> __instance) {
+            if (!Config.Instance.Enabled) return;
             if (!(__instance is DisappearingArrowController dac)) return;
             
             float dist = ArrowControllerController(ref dac).noteMovement.distanceToPlayer;

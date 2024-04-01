@@ -7,6 +7,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(ColorManager.ColorForType), typeof(ColorType))]
         static bool NoteColorPatch(ref Color __result, ref ColorScheme ____colorScheme, ColorType type) {
+            if (!Config.Instance.Enabled) return true;
             if (!Config.Instance.SameColor) return true;
             
             if (type == ColorType.None) __result = Color.black;
@@ -19,6 +20,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(ColorManager.ColorForSaberType))]
         static bool SaberColorPatch(ref ColorScheme ____colorScheme, ref Color __result) {
+            if (!Config.Instance.Enabled) return true;
             if (!Config.Instance.SameColor) return true;
 
             __result = Config.Instance.UseLeftColor ? ____colorScheme.saberAColor : ____colorScheme.saberBColor;
@@ -28,6 +30,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(ColorManager.EffectsColorForSaberType))]
         static bool SaberEffectsColorPatch(ref ColorScheme ____colorScheme, ref Color __result) {
+            if (!Config.Instance.Enabled) return true;
             if (!Config.Instance.SameColor) return true;
 
             float h, s, v;

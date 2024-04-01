@@ -13,6 +13,7 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameEnergyCounter.Start))]
         static void EnergyCounterStart(ref int ____batteryLives, ref GameEnergyCounter.InitData ____initData) {
+            if (!Config.Instance.Enabled) return;
             EnergyCounter = ____initData.instaFail ? new EnergyCounter(1, 0) :
                 ForceBatteryEnergy.OneHP ? new EnergyCounter(1, 4) :
                 new EnergyCounter(5, 4);
@@ -23,6 +24,7 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameEnergyCounter.ProcessEnergyChange))]
         static void ProcessEnergyChange(GameEnergyCounter __instance, ref float energyChange) {
+            if (!Config.Instance.Enabled) return;
             energyChange = 0f;
             EnergySetter.Invoke(ref __instance, 1f);
 
@@ -49,6 +51,7 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameEnergyCounter.HandleNoteWasCut))]
         static void NoteWasCut(NoteController noteController, NoteCutInfo noteCutInfo) {
+            if (!Config.Instance.Enabled) return;
             switch (noteController.noteData.gameplayType) {
                 case NoteData.GameplayType.Normal:
                 case NoteData.GameplayType.BurstSliderHead:
@@ -68,6 +71,7 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameEnergyCounter.HandleNoteWasMissed))]
         static void NoteWasMissed(NoteController noteController) {
+            if (!Config.Instance.Enabled) return;
             if (noteController.noteData.gameplayType != NoteData.GameplayType.Bomb) 
                 HandleMiss();
         }
