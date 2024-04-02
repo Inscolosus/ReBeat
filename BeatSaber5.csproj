@@ -175,6 +175,7 @@
     <Compile Include="HarmonyPatches\Gameplay\NoteColliderSize.cs" />
     <Compile Include="HarmonyPatches\Score\AngleCutScore.cs" />
     <Compile Include="HarmonyPatches\Score\CenterCutScore.cs" />
+    <Compile Include="HarmonyPatches\Score\OverwriteModifiers.cs" />
     <Compile Include="HarmonyPatches\Score\DisableComboMultiplier.cs" />
     <Compile Include="HarmonyPatches\Score\ScoreController.cs" />
     <Compile Include="HarmonyPatches\Score\SetModifiersMultiplier.cs" />

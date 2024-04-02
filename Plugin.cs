@@ -7,7 +7,7 @@ using IPA.Config.Stores;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BeatSaber5 {
-    [Plugin(RuntimeOptions.SingleStartInit)] // TODO: change to single start and just check if plugin is enabled on patches hahaball
+    [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin {
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
