@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
+namespace BeatSaber5.HarmonyPatches.Gameplay.ModifierPatches {
     [HarmonyPatch(typeof(DisappearingArrowControllerBase<GameNoteController>))]
     class Hidden {
         static readonly IPA.Utilities.FieldAccessor<DisappearingArrowController, GameNoteController>.Accessor ArrowControllerController =

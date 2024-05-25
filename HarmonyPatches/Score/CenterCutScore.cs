@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BeatSaber5.HarmonyPatches.UI;
+using HarmonyLib;
 
 namespace BeatSaber5.HarmonyPatches.Score {
     [HarmonyPatch(typeof(CutScoreBuffer))]
@@ -10,8 +11,8 @@ namespace BeatSaber5.HarmonyPatches.Score {
             float sectorSize = 0.6f / 29f;
             float cutDistanceToCenter = noteCutInfo.cutDistanceToCenter;
 
-            float[] sectors = Config.Instance.ProMode ? new[] { 4.5f, 8.5f, 11.5f, 13.5f, 14.5f } : 
-                Config.Instance.EasyMode ? new[] { 7.5f, 10.5f, 12.5f, 13.5f, 14.5f } : 
+            float[] sectors = Modifiers.instance.ProMode ? new[] { 4.5f, 8.5f, 11.5f, 13.5f, 14.5f } : 
+                Modifiers.instance.EasyMode ? new[] { 7.5f, 10.5f, 12.5f, 13.5f, 14.5f } : 
                 new[] { 6.5f, 9.5f, 11.5f, 13.5f, 14.5f };
 
             ____centerDistanceCutScore = cutDistanceToCenter < sectorSize * sectors[0] ? 50 :

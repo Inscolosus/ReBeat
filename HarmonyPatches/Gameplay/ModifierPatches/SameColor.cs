@@ -1,14 +1,15 @@
-﻿using HarmonyLib;
+﻿using BeatSaber5.HarmonyPatches.UI;
+using HarmonyLib;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
+namespace BeatSaber5.HarmonyPatches.Gameplay.ModifierPatches {
     [HarmonyPatch(typeof(ColorManager))]
     public class SameColor {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(ColorManager.ColorForType), typeof(ColorType))]
         static bool NoteColorPatch(ref Color __result, ref ColorScheme ____colorScheme, ColorType type) {
             if (!Config.Instance.Enabled) return true;
-            if (!Config.Instance.SameColor) return true;
+            if (!Modifiers.instance.SameColor) return true;
             
             if (type == ColorType.None) __result = Color.black;
             __result = Config.Instance.UseLeftColor ? __result = ____colorScheme.saberAColor : 
@@ -21,7 +22,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
         [HarmonyPatch(nameof(ColorManager.ColorForSaberType))]
         static bool SaberColorPatch(ref ColorScheme ____colorScheme, ref Color __result) {
             if (!Config.Instance.Enabled) return true;
-            if (!Config.Instance.SameColor) return true;
+            if (!Modifiers.instance.SameColor) return true;
 
             __result = Config.Instance.UseLeftColor ? ____colorScheme.saberAColor : ____colorScheme.saberBColor;
             return false;
@@ -31,7 +32,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.Modifiers {
         [HarmonyPatch(nameof(ColorManager.EffectsColorForSaberType))]
         static bool SaberEffectsColorPatch(ref ColorScheme ____colorScheme, ref Color __result) {
             if (!Config.Instance.Enabled) return true;
-            if (!Config.Instance.SameColor) return true;
+            if (!Modifiers.instance.SameColor) return true;
 
             float h, s, v;
             if (Config.Instance.UseLeftColor) Color.RGBToHSV(____colorScheme.saberAColor, out h, out s, out v);

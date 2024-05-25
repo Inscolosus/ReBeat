@@ -1,4 +1,5 @@
 ﻿using System;
+using BeatSaber5.HarmonyPatches.UI;
 using HarmonyLib;
 
 namespace BeatSaber5.HarmonyPatches.Gameplay {
@@ -9,9 +10,9 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         static void SetNjs(ref float ___noteJumpMovementSpeed) {
             if (!Config.Instance.Enabled) return;
             float baseNjs = ___noteJumpMovementSpeed;
-            if (Config.Instance.ProMode) ___noteJumpMovementSpeed = ((float)Math.Pow(___noteJumpMovementSpeed, 2) + 5f*___noteJumpMovementSpeed + 15f) / (___noteJumpMovementSpeed + 18f) + 11f;
-            if (GameplayModifiersData.SongSpeedMultiplier <= 1) return;
-            ___noteJumpMovementSpeed *= Multiplier(GameplayModifiersData.SongSpeedMultiplier) / GameplayModifiersData.SongSpeedMultiplier;
+            if (Modifiers.instance.ProMode) ___noteJumpMovementSpeed = ((float)Math.Pow(___noteJumpMovementSpeed, 2) + 5f*___noteJumpMovementSpeed + 15f) / (___noteJumpMovementSpeed + 18f) + 11f;
+            if (GameplayModifiersPatcher.SongSpeedMultiplier <= 1) return;
+            ___noteJumpMovementSpeed *= Multiplier(GameplayModifiersPatcher.SongSpeedMultiplier) / GameplayModifiersPatcher.SongSpeedMultiplier;
         }
 
         private static float Multiplier(float speed) {

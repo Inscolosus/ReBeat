@@ -1,4 +1,5 @@
 ﻿using System;
+using BeatSaber5.HarmonyPatches.UI;
 using HarmonyLib;
 using IPA.Utilities;
 
@@ -12,10 +13,10 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameEnergyCounter.Start))]
-        static void EnergyCounterStart(ref int ____batteryLives, ref GameEnergyCounter.InitData ____initData) {
+        static void EnergyCounterStart(ref int ____batteryLives) {
             if (!Config.Instance.Enabled) return;
-            EnergyCounter = ____initData.instaFail ? new EnergyCounter(1, 0) :
-                ForceBatteryEnergy.OneHP ? new EnergyCounter(1, 4) :
+            EnergyCounter = Modifiers.instance.OneLife ? new EnergyCounter(1, 0) :
+                Modifiers.instance.OneHp ? new EnergyCounter(1, 4) :
                 new EnergyCounter(5, 4);
             
             ____batteryLives = EnergyCounter.Health + EnergyCounter.MaxShield;

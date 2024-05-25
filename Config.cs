@@ -12,21 +12,9 @@ namespace BeatSaber5 {
             set {
                 if (value) {
                     BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
-                    try {
-                        SetModifiersMultiplier.SetMultipliers();
-                    }
-                    catch (NullReferenceException e) {
-                        // startup; ignore
-                    }
                 }
                 else {
                     BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
-                    try {
-                        SetModifiersMultiplier.ResetMultipliers();
-                    }
-                    catch (NullReferenceException e) {
-                        // startup; ignore
-                    }
                 }
                 _enabled = value;
             }
@@ -36,10 +24,7 @@ namespace BeatSaber5 {
         public virtual bool ScoreDebug { get; set; } = false;
         public virtual bool DebugTwo { get; set; } = false;
         public virtual bool DebugThree { get; set; } = false;
-        public bool ProMode { get; set; } = false; // might want to move these ones out of the config
-        public bool SameColor { get; set; } = false; // see promode
         public virtual bool UseLeftColor { get; set; } = false;
-        public bool EasyMode { get; set; } // see promode
 
         public virtual float ColorRed { get; set; } = 0f;
         public virtual float ColorGreen { get; set; } = 145f;
