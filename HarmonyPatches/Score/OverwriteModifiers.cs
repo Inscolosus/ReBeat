@@ -6,6 +6,18 @@ namespace BeatSaber5.HarmonyPatches {
     // TODO: should prob combine this, GameplayModifiersData and SetMultipliers into one file
     [HarmonyPatch(typeof(GameplayModifiersModelSO))]
     public class GameplayModifiersModel {
+        [HarmonyPostfix]
+        [HarmonyPatch("OnEnable")]
+        static void PrintExclusives(Dictionary<GameplayModifierParamsSO, GameplayModifiersModelSO.GameplayModifierBoolGetter> ____gameplayModifierGetters) {
+            foreach (var pair in ____gameplayModifierGetters) {
+                Plugin.Log.Info($"{pair.Key.name}:");
+                foreach (var gmpso in pair.Key.mutuallyExclusives) {
+                    Plugin.Log.Info(gmpso.name);
+                }
+                Plugin.Log.Info("");
+            }
+        }
+
         /*[HarmonyPatch(nameof(GameplayModifiersModelSO.GetTotalMultiplier))]
         static void Prefix(List<GameplayModifierParamsSO> modifierParams) {
             foreach (var mod in modifierParams) {
@@ -29,6 +41,8 @@ namespace BeatSaber5.HarmonyPatches {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifiersModelSO.CreateModifierParamsList))]
         static void ReEnableModifiers(ref List<GameplayModifierParamsSO> __result, GameplayModifiersModelSO __instance) {
+            // TODO: move modifier disabling to here, otherwise it messes up when you exit level
+            // I can't remember why I needed to do this and now it isn't happening anymore
             if (!Config.Instance.Enabled) return;
             
             if (Config.Instance.SameColor) {

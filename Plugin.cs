@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using BeatSaber5.HarmonyPatches.UI;
 using BeatSaberMarkupLanguage.GameplaySetup;
 using BeatSaberMarkupLanguage.Settings;
 using HarmonyLib;
@@ -28,6 +29,7 @@ namespace BeatSaber5 {
             Harmony.PatchAll(Assembly.GetExecutingAssembly());
             BSMLSettings.instance.AddSettingsMenu("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance);
             GameplaySetup.instance.AddTab("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance, MenuType.All);
+            GameplaySetup.instance.AddTab("Modifiers", "BeatSaber5.Views.Modifiers.bsml", Modifiers.instance, MenuType.All);
         }
 
         [OnExit]

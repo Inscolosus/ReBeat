@@ -1,0 +1,42 @@
+﻿<vertical>
+    <horizontal>
+        <text text="Total Score" align="Baseline" italics="true" font-size="5" />
+        <text id="MultiplierValue" text="100 %" align="Baseline" italics="true" font-size="7" color="#00C0FF" /> <!-- bad color FF5F00 -->
+        <text text="Max Rank" align="Baseline" italics="true" font-size="5" />
+        <text id="MaxRank" text="SS" align="Baseline" italics="true" font-size="7" color="#00C0FF" />
+    </horizontal>
+    <horizontal>
+        <vertical min-width="30">
+            <modifier value="NoFail" bind-value="true" on-change="SetNoFail" text="No Fail" src="#NoFailIcon" />
+            <modifier value="Hidden"  bind-value="true" on-change="SetHidden" text="Hidden" src="#SmallNotesIcon" />
+            <modifier value="ProMode" bind-value="true" on-change="SetProMode" text="Pro Mode" src="#PreciseAnglesIcon" />
+            <modifier value="SlowerSong" bind-value="true" on-change="SetSlowerSong" text="Slower Song" src="#SlowerSongIcon" />
+        </vertical>
+        <vertical min-width="30">
+            <modifier value="OneLife" bind-value="true" on-change="SetOneLife" text="1 Life" src="#OneLifeIcon" />
+            <modifier value="DisappearingArrows" bind-value="true" on-change="SetDisappearingArrows" text="Disappearing Arrows" src="#DisappearingArrows" />
+            <modifier value="StrictAngles" bind-value="true" on-change="SetStrictAngles" text="Strict Angles" />
+            <modifier value="FasterSong" bind-value="true" on-change="SetFasterSong" text="Faster Song" src="#FasterSongIcon" />
+        </vertical>
+        <vertical child-expand-width="true" min-width="30">
+            <modifier value="OneHp" bind-value="true" on-change="SetOneHp" text="1 HP" src="#FourLivesIcon" />
+            <modifier value="EasyMode" bind-value="true" on-change="SetEasyMode" text="Easy Mode" />
+            <modifier value="SameColor" bind-value="true" on-change="SetSameColor" text="Same Color" src="#ProModeIcon" />
+            <modifier value="SuperFastSong" bind-value="true" on-change="SetSuperFastSong" text="Super Fast Song" src="#SuperFastSongIcon" />
+        </vertical>
+    </horizontal>
+    <horizontal>
+        <text text="legacy" />
+    </horizontal>
+    <horizontal>
+        <vertical min-width="30" >
+            <modifier value="NoBombs" bind-value="true" on-change="SetNoBombs" text="No Bombs" src="#NoBombsIcon" />
+        </vertical>
+        <vertical min-width="30" >
+            <modifier value="NoWalls" bind-value="true" on-change="SetNoWalls" text="No Walls" src="#NoObstaclesIcon" />
+        </vertical>
+        <vertical min-width="30" >
+            <modifier value="ZenMode" bind-value="true" on-change="SetZenMode" text="Liberty Bell" src="BeatSaber5.Views.libertybell.png" />
+        </vertical>
+    </horizontal>
+</vertical>
