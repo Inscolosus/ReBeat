@@ -6,7 +6,7 @@ using UnityEngine;
 
 // ReSharper disable UnusedMember.Local
 
-namespace BeatSaber5.HarmonyPatches.UI {
+namespace ReBeat.HarmonyPatches.UI {
     public class Modifiers : NotifiableSingleton<Modifiers> {
         [UIComponent("MultiplierValue")] private TextMeshProUGUI multiplierValue;
         [UIComponent("MaxRank")] private TextMeshProUGUI maxRank;
@@ -14,19 +14,17 @@ namespace BeatSaber5.HarmonyPatches.UI {
         public override void OnEnable() {
             PropertyChanged += OnPropertyChanged;
         }
-                                              // nf  1l 1hp  nb  nw   easy  hidden da  sameColor
-        private readonly float[] multipliers = { 0f, 0f, 0f, 0f, 0f, -0.4f, 0.05f, 0f, 0.07f,
-         // pro   sa    zen   ss    fs    sfs
-            0.12f, 100f, 0f, -0.5f, 0.07f, 0.15f };
+                                                     // nf  1l 1hp  nb  nw   easy  hidden da  sameColor
+        private static readonly float[] Multipliers = { 0f, 0f, 0f, 0f, 0f, -0.4f, 0.05f, 0f, 0.07f,
+         // pro   gn     ss    fs    sfs    na  sn
+            0.12f, 0f, -0.5f, 0.07f, 0.15f, 0f, 0f };
 
         public float Multiplier {
             get {
-                if (ZenMode) return 0f;
-                
                 var mods = GetModifiers();
                 float multiplier = 1f;
                 for (int i = 0; i < mods.Length; i++) {
-                    if (mods[i]) multiplier += multipliers[i];
+                    if (mods[i]) multiplier += Multipliers[i];
                 }
 
                 return multiplier;
@@ -35,7 +33,7 @@ namespace BeatSaber5.HarmonyPatches.UI {
 
         private bool[] GetModifiers() {
             return new[] { _noFail, _oneLife, _oneHp, _noBombs, _noWalls, _easyMode, _hidden, _disappearingArrows, _sameColor, 
-                _proMode, _strictAngles, _zenMode, _slowerSong, _fasterSong, _superFastSong };
+                _proMode, _ghostNotes, _slowerSong, _fasterSong, _superFastSong, _noArrows, _smallNotes };
         }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
             Color color = Multiplier >= 1 ? new Color(0f, 0.75f, 1f) : new Color(1f, 0.37f, 0f);
@@ -62,10 +60,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
         public bool NoFail {
             get => _noFail;
             private set {
-                if (value) {
-                    ZenMode = false;
-                }
-                
                 _noFail = value;
                 NotifyPropertyChanged();
             }
@@ -84,7 +78,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
             private set {
                 if (value) {
                     OneHp = false;
-                    ZenMode = false;
                 }
                 
                 _oneLife = value;
@@ -105,7 +98,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
             private set {
                 if (value) {
                     OneLife = false;
-                    ZenMode = false;
                 }
                 _oneHp = value;
                 NotifyPropertyChanged();
@@ -123,9 +115,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
         public bool NoBombs {
             get => _noBombs;
             private set {
-                if (value) {
-                    ZenMode = false;
-                }
                 _noBombs = value;
                 NotifyPropertyChanged();
             }
@@ -142,9 +131,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
         public bool NoWalls {
             get => _noWalls;
             private set {
-                if (value) {
-                    ZenMode = false;
-                }
                 _noWalls = value;
                 NotifyPropertyChanged();
             }
@@ -163,7 +149,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
             private set {
                 if (value) {
                     ProMode = false;
-                    ZenMode = false;
                 }
                 _easyMode = value;
                 NotifyPropertyChanged();
@@ -182,9 +167,8 @@ namespace BeatSaber5.HarmonyPatches.UI {
             get => _hidden;
             private set {
                 if (value) {
-                    // TODO: anything else that should be here
+                    GhostNotes = false;
                     DisappearingArrows = false;
-                    ZenMode = false;
                 }
                 _hidden = value;
                 NotifyPropertyChanged();
@@ -204,7 +188,7 @@ namespace BeatSaber5.HarmonyPatches.UI {
             private set {
                 if (value) {
                     Hidden = false;
-                    ZenMode = false;
+                    DisappearingArrows = false;
                 }
                 _disappearingArrows = value;
                 NotifyPropertyChanged();
@@ -222,9 +206,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
         public bool SameColor {
             get => _sameColor;
             private set {
-                if (value) {
-                    ZenMode = false;
-                }
                 _sameColor = value;
                 NotifyPropertyChanged();
             }
@@ -243,7 +224,6 @@ namespace BeatSaber5.HarmonyPatches.UI {
             private set {
                 if (value) {
                     EasyMode = false;
-                    ZenMode = false;
                 }
                 _proMode = value;
                 NotifyPropertyChanged();
@@ -256,52 +236,23 @@ namespace BeatSaber5.HarmonyPatches.UI {
         }
         
         
-        private bool _strictAngles;
-        [UIValue("StrictAngles")] 
-        public bool StrictAngles {
-            get => _strictAngles;
+        private bool _ghostNotes;
+        [UIValue("GhostNotes")] 
+        public bool GhostNotes {
+            get => _ghostNotes;
             private set {
                 if (value) {
-                    // TODO: no arrows + anything else
-                    ZenMode = false;
-                }
-                _strictAngles = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        [UIAction("SetStrictAngles")]
-        private void SetStrictAngles(bool value) {
-            StrictAngles = value;
-        }
-        
-        
-        private bool _zenMode;
-        [UIValue("ZenMode")] 
-        public bool ZenMode {
-            get => _zenMode;
-            private set {
-                if (value) { // everything except song speed
-                    NoFail = false;
-                    OneLife = false;
-                    OneHp = false;
-                    NoBombs = false;
-                    NoWalls = false;
-                    EasyMode = false;
-                    Hidden = false;
                     DisappearingArrows = false;
-                    SameColor = false;
-                    ProMode = false;
-                    StrictAngles = false;
+                    Hidden = false;
                 }
-                _zenMode = value;
+                _ghostNotes = value;
                 NotifyPropertyChanged();
             }
         }
 
-        [UIAction("SetZenMode")]
-        private void SetZenMode(bool value) {
-            ZenMode = value;
+        [UIAction("SetGhostNotes")]
+        private void SetGhostNotes(bool value) {
+            GhostNotes = value;
         }
         
         
@@ -363,6 +314,40 @@ namespace BeatSaber5.HarmonyPatches.UI {
         private void SetSuperFastSong(bool value) {
             SuperFastSong = value;
         }
+        
+        
+        private bool _noArrows;
+        [UIValue("NoArrows")] 
+        public bool NoArrows {
+            get => _noArrows;
+            private set {
+                if (value) {
+                    DisappearingArrows = false;
+                }
+                _noArrows = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [UIAction("SetNoArrows")]
+        private void SetNoArrows(bool value) {
+            NoArrows = value;
+        }
+        
+        
+        private bool _smallNotes;
+        [UIValue("SmallNotes")] 
+        public bool SmallNotes {
+            get => _smallNotes;
+            private set {
+                _smallNotes = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [UIAction("SetSmallNotes")]
+        private void SetSmallNotes(bool value) {
+            SmallNotes = value;
+        }
     }
-    
 }

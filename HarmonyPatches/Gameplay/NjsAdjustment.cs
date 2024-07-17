@@ -1,8 +1,8 @@
 ﻿using System;
-using BeatSaber5.HarmonyPatches.UI;
 using HarmonyLib;
+using ReBeat.HarmonyPatches.UI;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay {
+namespace ReBeat.HarmonyPatches.Gameplay {
     [HarmonyPatch(typeof(BeatmapObjectSpawnController.InitData))]
     class NjsAdjustment {
         [HarmonyPostfix]
@@ -18,7 +18,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         private static float Multiplier(float speed) {
             switch (speed) {
                 case 1.2f: return 1.1f;
-                case 1.5f: return 1.2f;
+                case 1.5f: return 1.3f;
                 default: return 1f;
             }
         }

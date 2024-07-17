@@ -8,8 +8,8 @@
     <ProjectGuid>{2E587E78-7B71-4DBA-8220-A677D74B5043}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BeatSaber5</RootNamespace>
-    <AssemblyName>BeatSaber5</AssemblyName>
+    <RootNamespace>ReBeat</RootNamespace>
+    <AssemblyName>ReBeat</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <DebugSymbols>true</DebugSymbols>
@@ -191,7 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
-    <None Include="BeatSaber5.csproj.user" Condition="Exists('BeatSaber5.csproj.user')" />
+    <None Include="ReBeat.csproj.user" Condition="Exists('ReBeat.csproj.user')" />
     <EmbeddedResource Include="Views\Menu.bsml" />
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +203,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\Modifiers.bsml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\libertybell.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

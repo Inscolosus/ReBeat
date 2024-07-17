@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace BeatSaber5.HarmonyPatches.UI {
+namespace ReBeat.HarmonyPatches.UI {
     [HarmonyPatch(typeof(RankModel))]
     class DisplayRank {
         [HarmonyPrefix]

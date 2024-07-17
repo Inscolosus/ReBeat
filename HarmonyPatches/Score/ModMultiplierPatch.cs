@@ -1,7 +1,7 @@
-﻿using BeatSaber5.HarmonyPatches.UI;
-using HarmonyLib;
+﻿using HarmonyLib;
+using ReBeat.HarmonyPatches.UI;
 
-namespace BeatSaber5.HarmonyPatches.Score {
+namespace ReBeat.HarmonyPatches.Score {
     [HarmonyPatch(typeof(GameplayModifiersModelSO))]
     public class ModMultiplierPatch {
         [HarmonyPrefix]

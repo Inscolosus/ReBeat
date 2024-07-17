@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.Score {
+namespace ReBeat.HarmonyPatches.Score {
     [HarmonyPatch(typeof(SaberSwingRating))]
     class SwingRating {
         [HarmonyPrefix]

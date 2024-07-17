@@ -1,8 +1,8 @@
-﻿using BeatSaber5.HarmonyPatches.UI;
-using HarmonyLib;
+﻿using HarmonyLib;
+using ReBeat.HarmonyPatches.UI;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay.ModifierPatches {
+namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
     [HarmonyPatch(typeof(ColorManager))]
     public class SameColor {
         [HarmonyPrefix]

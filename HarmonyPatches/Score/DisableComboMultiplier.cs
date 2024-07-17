@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace BeatSaber5.HarmonyPatches.Score {
+namespace ReBeat.HarmonyPatches.Score {
     [HarmonyPatch(typeof(ScoreMultiplierCounter))]
     static class DisableComboMultiplier {
         [HarmonyPrefix]

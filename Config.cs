@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using BeatSaber5.HarmonyPatches.Score;
+using ReBeat.HarmonyPatches.Score;
+using ReBeat.HarmonyPatches.UI;
 
-namespace BeatSaber5 {
+namespace ReBeat {
 	public class Config {
         public static Config Instance;
         private bool _enabled;
@@ -11,31 +12,21 @@ namespace BeatSaber5 {
             get => _enabled;
             set {
                 if (value) {
-                    BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("BeatSaber5");
+                    BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("ReBeat");
                 }
                 else {
-                    BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("BeatSaber5");
+                    BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
                 }
                 _enabled = value;
+                HideModifiersPanel.GsvcInstance.RefreshContent(); // this causes a null reference exception somewhere in the game but everything seems to still work fine
             }
         }
 
         public virtual bool ShowComboPercent { get; set; } = false;
-        public virtual bool ScoreDebug { get; set; } = false;
-        public virtual bool DebugTwo { get; set; } = false;
-        public virtual bool DebugThree { get; set; } = false;
         public virtual bool UseLeftColor { get; set; } = false;
-
         public virtual float ColorRed { get; set; } = 0f;
         public virtual float ColorGreen { get; set; } = 145f;
         public virtual float ColorBlue { get; set; } = 255f;
-        public virtual float ThisDoesNothing { get; set; } = 1f;
-
-        public const float StartingHealth = 5.0f;
-
-        public virtual float FadeEndDistance { get; set; } = 2.5f;
-        public virtual float FadeDistanceDuration { get; set; } = 2f;
-        public virtual float DebugSlider { get; set; } = 0.25f;
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).

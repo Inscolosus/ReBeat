@@ -1,9 +1,10 @@
 ﻿using System;
-using BeatSaber5.HarmonyPatches.UI;
 using HarmonyLib;
 using IPA.Utilities;
+using ReBeat.HarmonyPatches.UI;
+using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.Energy {
+namespace ReBeat.HarmonyPatches.Energy {
     [HarmonyPatch(typeof(GameEnergyCounter))]
     class EnergyController {
         internal static EnergyCounter EnergyCounter { get; private set; }
@@ -20,6 +21,24 @@ namespace BeatSaber5.HarmonyPatches.Energy {
                 new EnergyCounter(5, 4);
             
             ____batteryLives = EnergyCounter.Health + EnergyCounter.MaxShield;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(GameEnergyCounter.LateUpdate))]
+        static void HandleWall(ref PlayerHeadAndObstacleInteraction ____playerHeadAndObstacleInteraction) {
+            if (____playerHeadAndObstacleInteraction.playerHeadIsInObstacle) {
+                if (EnergyCounter.WasInWallLastFrame) {
+                    EnergyCounter.TimeToNextWallDamage -= Time.deltaTime;
+                    if (EnergyCounter.TimeToNextWallDamage > 0) return;
+                }
+
+                EnergyCounter.WasInWallLastFrame = true;
+                EnergyCounter.TimeToNextWallDamage = 0.5f;
+                EnergyCounter.Misses++;
+            }
+            else {
+                EnergyCounter.WasInWallLastFrame = false;
+            }
         }
 
         [HarmonyPrefix]
@@ -78,10 +97,10 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         }
         
         private static void HandleCut() {
-            if ((DateTime.Now - EnergyCounter.LastMiss).TotalSeconds < EnergyCounter.ShieldCooldown) return;
-            if (EnergyCounter.ShieldProgress < EnergyCounter.ShieldRegen) {
-                EnergyCounter.ShieldProgress++;
-            }
+            if (EnergyCounter.ShieldProgress >= EnergyCounter.ShieldRegen) return;
+            if (Time.time - EnergyCounter.LastMiss < EnergyCounter.ShieldCooldown) return;
+            
+            EnergyCounter.ShieldProgress++;
 
             if (EnergyCounter.ShieldProgress >= EnergyCounter.ShieldRegen && EnergyCounter.Shield < EnergyCounter.MaxShield) {
                 EnergyCounter.Shield++;
@@ -93,7 +112,7 @@ namespace BeatSaber5.HarmonyPatches.Energy {
         }
 
         private static void HandleMiss() {
-            EnergyCounter.LastMiss = DateTime.Now;
+            EnergyCounter.LastMiss = Time.time;
             EnergyCounter.ShieldProgress = 0;
             EnergyCounter.Misses++;
 

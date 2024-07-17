@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using HarmonyLib;
 
-namespace BeatSaber5.HarmonyPatches.Score {
+namespace ReBeat.HarmonyPatches.Score {
     [HarmonyPatch(typeof(ScoreModel))]
     class AngleCutScore {
         private static readonly Dictionary<NoteData.ScoringType, ScoreModel.NoteScoreDefinition> NewScoreDefinitions = new Dictionary<NoteData.ScoringType, ScoreModel.NoteScoreDefinition> {

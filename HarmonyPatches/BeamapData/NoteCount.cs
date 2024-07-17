@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace BeatSaber5.HarmonyPatches.BeamapData {
+namespace ReBeat.HarmonyPatches.BeamapData {
     [HarmonyPatch(typeof(BeatmapDataLoader))]
     class NoteCount {
         internal static int Count { get; private set; }

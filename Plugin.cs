@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
-using BeatSaber5.HarmonyPatches.UI;
 using BeatSaberMarkupLanguage.GameplaySetup;
 using BeatSaberMarkupLanguage.Settings;
 using HarmonyLib;
 using IPA;
 using IPA.Config.Stores;
+using ReBeat.HarmonyPatches.UI;
 using IPALogger = IPA.Logging.Logger;
 
-namespace BeatSaber5 {
+namespace ReBeat {
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin {
         internal static Plugin Instance { get; private set; }
@@ -19,7 +19,7 @@ namespace BeatSaber5 {
         public Plugin(IPALogger logger, IPA.Config.Config config) {
             Instance = this;
             Log = logger;
-            Harmony = new Harmony("Inscolosus.BeatSaber.BeatSaber5");
+            Harmony = new Harmony("Inscolosus.BeatSaber.ReBeat");
             Config.Instance = config.Generated<Config>();
             
         }
@@ -27,9 +27,9 @@ namespace BeatSaber5 {
         [OnStart]
         public void OnEnable() {
             Harmony.PatchAll(Assembly.GetExecutingAssembly());
-            BSMLSettings.instance.AddSettingsMenu("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance);
-            GameplaySetup.instance.AddTab("BeatSaber5", "BeatSaber5.Views.Menu.bsml", Config.Instance, MenuType.All);
-            GameplaySetup.instance.AddTab("Modifiers", "BeatSaber5.Views.Modifiers.bsml", Modifiers.instance, MenuType.All);
+            BSMLSettings.instance.AddSettingsMenu("ReBeat", "ReBeat.Views.Menu.bsml", Config.Instance);
+            GameplaySetup.instance.AddTab("ReBeat", "ReBeat.Views.Menu.bsml", Config.Instance, MenuType.All);
+            GameplaySetup.instance.AddTab("Modifiers", "ReBeat.Views.Modifiers.bsml", Modifiers.instance, MenuType.All);
         }
 
         [OnExit]

@@ -1,7 +1,8 @@
 ﻿using HarmonyLib;
+using ReBeat.HarmonyPatches.UI;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay.ModifierPatches {
+namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
     [HarmonyPatch(typeof(DisappearingArrowControllerBase<GameNoteController>))]
     class Hidden {
         static readonly IPA.Utilities.FieldAccessor<DisappearingArrowController, GameNoteController>.Accessor ArrowControllerController =
@@ -9,15 +10,18 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.ModifierPatches {
         static readonly IPA.Utilities.FieldAccessor<CutoutAnimateEffect, CutoutEffect[]>.Accessor CutoutController =
             IPA.Utilities.FieldAccessor<CutoutAnimateEffect, CutoutEffect[]>.GetAccessor("_cuttoutEffects");
 
+        private const float FadeEndDistance = 2;
+        private const float FadeDistanceDuration = 7;
+
         [HarmonyPostfix]
         [HarmonyPatch("HandleNoteMovementNoteDidMoveInJumpPhase")]
         static void FadeMesh(DisappearingArrowControllerBase<GameNoteController> __instance) {
-            if (!Config.Instance.Enabled) return;
+            if (!Config.Instance.Enabled || Modifiers.instance.GhostNotes) return;
             if (!(__instance is DisappearingArrowController dac)) return;
             
             float dist = ArrowControllerController(ref dac).noteMovement.distanceToPlayer;
 
-            if (dist < Config.Instance.FadeEndDistance) return;
+            if (dist < FadeEndDistance) return;
 
             var cutoutAnimateEffect = __instance.gameObject.GetComponent<CutoutAnimateEffect>();
             if (cutoutAnimateEffect is null) return;
@@ -27,8 +31,8 @@ namespace BeatSaber5.HarmonyPatches.Gameplay.ModifierPatches {
             foreach (var cutoutEffect in cutoutEffects) {
                 if (!cutoutEffect.name.Equals("NoteCube")) continue;
 
-                float val = Mathf.Clamp01((dist - Config.Instance.FadeEndDistance) / Config.Instance.FadeDistanceDuration);
-                val = val < Config.Instance.DebugSlider ? 0 : val;
+                float val = Mathf.Clamp01((dist - FadeEndDistance) / FadeDistanceDuration);
+                val = val < 0.25 ? 0 : val; // I don't remember why this is needed, but I don't think it works without it lohl
                 cutoutEffect.SetCutout(1f - val);
 
                 break;

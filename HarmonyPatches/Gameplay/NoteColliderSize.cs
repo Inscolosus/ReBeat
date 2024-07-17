@@ -1,8 +1,8 @@
-﻿using BeatSaber5.HarmonyPatches.UI;
-using HarmonyLib;
+﻿using HarmonyLib;
+using ReBeat.HarmonyPatches.UI;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay {
+namespace ReBeat.HarmonyPatches.Gameplay {
     [HarmonyPatch(typeof(BoxCuttableBySaber))]
     class NoteColliderSize {
         [HarmonyPrefix]

@@ -1,7 +1,7 @@
-﻿using BeatSaber5.HarmonyPatches.UI;
-using HarmonyLib;
+﻿using HarmonyLib;
+using ReBeat.HarmonyPatches.UI;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay {
+namespace ReBeat.HarmonyPatches.Gameplay {
     [HarmonyPatch(typeof(GameplayModifiers))]
     class GameplayModifiersPatcher {
         [HarmonyPostfix]
@@ -39,7 +39,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         [HarmonyPatch(nameof(GameplayModifiers.strictAngles), MethodType.Getter)]
         static void StrictAngles(ref bool __result) {
             if (!Config.Instance.Enabled) return;
-            __result = Modifiers.instance.StrictAngles;
+            __result = false; // pretty sure this doesn't need to be here, but I'm just gonna leave it anyway bc I don't want to check
         }
         
         [HarmonyPostfix]
@@ -53,10 +53,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         [HarmonyPatch(nameof(GameplayModifiers.ghostNotes), MethodType.Getter)]
         static void GhostNotes(ref bool __result) {
             if (!Config.Instance.Enabled) return;
-            // TODO: Legacy modifier support
-            // hidden currently just uses ghost notes, so when ghost notes is added back it will also be set here,
-            // and then there will be a check in the mesh patches for if hidden is enabled
-            __result = Modifiers.instance.Hidden;
+            __result = Modifiers.instance.Hidden || Modifiers.instance.GhostNotes;
         }
         
         [HarmonyPostfix]
@@ -81,7 +78,7 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         [HarmonyPatch(nameof(GameplayModifiers.noArrows), MethodType.Getter)]
         static void NoArrows(ref bool __result) {
             if (!Config.Instance.Enabled) return;
-            __result = false; // TODO: legacy modifier support
+            __result = Modifiers.instance.NoArrows;
         }
         
         [HarmonyPostfix]
@@ -92,17 +89,10 @@ namespace BeatSaber5.HarmonyPatches.Gameplay {
         }
         
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(GameplayModifiers.zenMode), MethodType.Getter)]
-        static void ZenMode(ref bool __result) {
-            if (!Config.Instance.Enabled) return;
-            __result = Modifiers.instance.ZenMode;
-        }
-        
-        [HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifiers.smallCubes), MethodType.Getter)]
         static void SmallCubes(ref bool __result) {
             if (!Config.Instance.Enabled) return;
-            __result = false; // TODO: legacy modifier support
+            __result = Modifiers.instance.SmallNotes; 
         }
         
         internal static float SongSpeedMultiplier { get; private set; }

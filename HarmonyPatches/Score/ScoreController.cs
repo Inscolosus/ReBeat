@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using BeatSaber5.HarmonyPatches.BeamapData;
-using BeatSaber5.HarmonyPatches.Energy;
 using HarmonyLib;
+using ReBeat.HarmonyPatches.BeamapData;
+using ReBeat.HarmonyPatches.Energy;
 
-namespace BeatSaber5.HarmonyPatches.Score {
+namespace ReBeat.HarmonyPatches.Score {
     [HarmonyPatch(typeof(global::ScoreController))]
     class ScoreController {
         internal static int TotalCutScore { get; private set; }
@@ -41,11 +41,6 @@ namespace BeatSaber5.HarmonyPatches.Score {
             double accCurve = (19.0444 * Math.Tan((Math.PI / 133d) * acc - 4.22) + 35.5) * 0.01; // rip j
 
             int score = TotalCutScore == 0 || TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)TotalNotes / (double)noteCount));
-
-            if (Config.Instance.DebugTwo) {
-                Plugin.Log.Info($"{TotalCutScore} {TotalNotes} | {acc} {noteCount} {misses} {maxCombo} | {missCountCurve} {maxComboCurve} {accCurve} | {score}");
-            }
-
             ____multipliedScore = score;
             ____immediateMaxPossibleMultipliedScore = (int)(1_000_000d * ((double)TotalNotes / (double)noteCount)); 
 

@@ -1,10 +1,10 @@
 ﻿{
   "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
-  "id": "BeatSaber5",
-  "name": "BeatSaber5",
+  "id": "ReBeat",
+  "name": "ReBeat",
   "author": "Inscolosus",
   "version": "0.1.0",
-  "description": "Beat Saber version 5",
+  "description": "Beat Saber overhaul mod by Inscolosus and Astrella",
   "gameVersion": "1.25.1",
   "dependsOn": {
     "BSIPA": "^4.2.0"

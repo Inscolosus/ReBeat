@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace BeatSaber5.HarmonyPatches.Gameplay {
+namespace ReBeat.HarmonyPatches.Gameplay {
     [HarmonyPatch(typeof(GameNoteController))]
     class DisableWrongColorBadCut {
         [HarmonyPrefix]

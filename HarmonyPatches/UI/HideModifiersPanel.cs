@@ -1,11 +1,21 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 
-namespace BeatSaber5.HarmonyPatches.UI {
-    [HarmonyPatch(typeof(GameplaySetupViewController), nameof(GameplaySetupViewController.RefreshContent))]
+namespace ReBeat.HarmonyPatches.UI {
+    [HarmonyPatch(typeof(GameplaySetupViewController))]
     class HideModifiersPanel {
+        internal static GameplaySetupViewController GsvcInstance;
+        
         [HarmonyPrefix]
-        static void J(ref bool ____showModifiers) {
-            if (Config.Instance.Enabled) ____showModifiers = false;
+        [HarmonyPatch(nameof(GameplaySetupViewController.RefreshContent))]
+        static void HideGameplayModifiers(ref bool ____showModifiers) {
+            ____showModifiers = !Config.Instance.Enabled;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(GameplaySetupViewController.Setup))]
+        static void SetInstance(GameplaySetupViewController __instance) {
+            GsvcInstance = __instance;
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using BeatSaber5.HarmonyPatches.Energy;
 using HarmonyLib;
+using ReBeat.HarmonyPatches.Energy;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BeatSaber5.HarmonyPatches.UI {
+namespace ReBeat.HarmonyPatches.UI {
     [HarmonyPatch(typeof(GameEnergyUIPanel))]
     public class EnergyUI {
         [HarmonyPostfix]

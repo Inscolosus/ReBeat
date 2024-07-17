@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace BeatSaber5.HarmonyPatches.BeamapData {
+namespace ReBeat.HarmonyPatches.BeamapData {
     [HarmonyPatch(typeof(BeatmapLevelData))]
     class AudioLength {
         internal static float Length { get; private set; }
