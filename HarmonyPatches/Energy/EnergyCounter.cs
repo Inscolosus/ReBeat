@@ -3,7 +3,7 @@ using ReBeat.HarmonyPatches.BeamapData;
 
 namespace ReBeat.HarmonyPatches.Energy {
     public class EnergyCounter {
-        public const float ShieldCooldown = 2f; //0.2f;
+        public const float ShieldCooldown = 0.2f;
         
         public int MaxShield { get; }
         public int MaxHealth { get; }
