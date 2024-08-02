@@ -188,7 +188,7 @@ namespace ReBeat.HarmonyPatches.UI {
             private set {
                 if (value) {
                     Hidden = false;
-                    DisappearingArrows = false;
+                    GhostNotes = false;
                 }
                 _disappearingArrows = value;
                 NotifyPropertyChanged();

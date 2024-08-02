@@ -26,6 +26,7 @@ namespace ReBeat.HarmonyPatches.Energy {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameEnergyCounter.LateUpdate))]
         static void HandleWall(ref PlayerHeadAndObstacleInteraction ____playerHeadAndObstacleInteraction) {
+            if (!Config.Instance.Enabled) return;
             if (____playerHeadAndObstacleInteraction.playerHeadIsInObstacle) {
                 if (EnergyCounter.WasInWallLastFrame) {
                     EnergyCounter.TimeToNextWallDamage -= Time.deltaTime;
