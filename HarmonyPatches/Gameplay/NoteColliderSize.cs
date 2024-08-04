@@ -6,7 +6,7 @@ namespace ReBeat.HarmonyPatches.Gameplay {
     [HarmonyPatch(typeof(BoxCuttableBySaber))]
     class NoteColliderSize {
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(BoxCuttableBySaber.Awake))]
+        [HarmonyPatch("Awake")]
         static void SetColliderSize(ref BoxCollider ____collider) {
             if (!Config.Instance.Enabled) return;
             ____collider.size = Modifiers.instance.ProMode ? new Vector3(0.45f, 0.45f, 0.45f) :

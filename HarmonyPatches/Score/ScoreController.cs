@@ -14,7 +14,7 @@ namespace ReBeat.HarmonyPatches.Score {
         internal static int CurrentMaxScore { get; private set; }
         
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(global::ScoreController.Start))]
+        [HarmonyPatch("Start")]
         static void OnStart(ScoreController __instance) {
             if (!Config.Instance.Enabled) return;
             TotalCutScore = 0;
@@ -22,7 +22,7 @@ namespace ReBeat.HarmonyPatches.Score {
         }
         
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(global::ScoreController.LateUpdate))]
+        [HarmonyPatch("LateUpdate")]
         static void ScoreUpdate(ref int ____multipliedScore, ref int ____modifiedScore,
             ref int ____immediateMaxPossibleMultipliedScore, ref int ____immediateMaxPossibleModifiedScore,
             ref GameplayModifiersModelSO ____gameplayModifiersModel,
@@ -57,7 +57,7 @@ namespace ReBeat.HarmonyPatches.Score {
         }
         
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(global::ScoreController.DespawnScoringElement))]
+        [HarmonyPatch("DespawnScoringElement")]
         static void HandleScoringElement(ScoringElement scoringElement) {
             if (!Config.Instance.Enabled) return;
             if (scoringElement.noteData.gameplayType == NoteData.GameplayType.Bomb) return;

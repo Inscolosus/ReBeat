@@ -6,8 +6,8 @@ namespace ReBeat.HarmonyPatches.BeamapData {
         internal static int Count { get; private set; }
         
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(BeatmapDataLoader.GetBeatmapDataFromSaveData))]
-        static void SetNoteCount(BeatmapData __result) {
+        [HarmonyPatch(nameof(BeatmapDataLoader.LoadBeatmapData))]
+        static void SetNoteCount(IReadonlyBeatmapData __result) {
             Count = __result.cuttableNotesCount;
         }
     }

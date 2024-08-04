@@ -8,7 +8,7 @@ namespace ReBeat.HarmonyPatches.UI {
     [HarmonyPatch(typeof(GameEnergyUIPanel))]
     public class EnergyUI {
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(GameEnergyUIPanel.RefreshEnergyUI))]
+        [HarmonyPatch("RefreshEnergyUI")]
         static void RefreshEnergyUI(ref List<Image> ____batteryLifeSegments, ref IGameEnergyCounter ____gameEnergyCounter, ref Image ____energyBar, ref RectTransform ____energyBarRectTransform) {
             if (!Config.Instance.Enabled) return;
             // health bar
@@ -50,7 +50,7 @@ namespace ReBeat.HarmonyPatches.UI {
         }
         
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(GameEnergyUIPanel.Start))]
+        [HarmonyPatch("Start")]
         static void MoveNormalEnergyBar(ref Image ____energyBar) {
             if (!Config.Instance.Enabled) return;
             ____energyBar.gameObject.transform.position = new Vector3(-0.9539997f, -0.86f, 7.75f);

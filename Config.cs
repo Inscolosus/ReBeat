@@ -18,7 +18,8 @@ namespace ReBeat {
                     BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
                 }
                 _enabled = value;
-                HideModifiersPanel.GsvcInstance.RefreshContent(); // this causes a null reference exception somewhere in the game but everything seems to still work fine
+                // doesn't work anymore anyway bc it's private now
+                //HideModifiersPanel.GsvcInstance.RefreshContent(); // this causes a null reference exception somewhere in the game but everything seems to still work fine
             }
         }
 

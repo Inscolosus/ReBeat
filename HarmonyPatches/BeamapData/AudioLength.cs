@@ -2,12 +2,12 @@
 using UnityEngine;
 
 namespace ReBeat.HarmonyPatches.BeamapData {
-    [HarmonyPatch(typeof(BeatmapLevelData))]
+    [HarmonyPatch(typeof(BeatmapLevelDataSO))]
     class AudioLength {
         internal static float Length { get; private set; }
         
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(BeatmapLevelData.audioClip), MethodType.Getter)]
+        [HarmonyPatch(nameof(BeatmapLevelDataSO.songAudioClip), MethodType.Getter)]
         static void SetLength(AudioClip __result) {
             Length = __result.length;
         }

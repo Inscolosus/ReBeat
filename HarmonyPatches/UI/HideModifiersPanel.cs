@@ -8,7 +8,7 @@ namespace ReBeat.HarmonyPatches.UI {
         internal static GameplaySetupViewController GsvcInstance;
         
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameplaySetupViewController.RefreshContent))]
+        [HarmonyPatch("RefreshContent")]
         static void HideGameplayModifiers(ref bool ____showModifiers){//}ref TextSegmentedControl ____selectionSegmentedControl, List<GameplaySetupViewController.Panel> ____panels, GameplaySetupViewController __instance) {
             ____showModifiers = !Config.Instance.Enabled;
             /*if (!Config.Instance.Enabled) return;

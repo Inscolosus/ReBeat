@@ -13,7 +13,7 @@ namespace ReBeat.HarmonyPatches.Energy {
             PropertyAccessor<GameEnergyCounter, float>.GetSetter("energy");
         
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameEnergyCounter.Start))]
+        [HarmonyPatch("Start")]
         static void EnergyCounterStart(ref int ____batteryLives) {
             if (!Config.Instance.Enabled) return;
             EnergyCounter = Modifiers.instance.OneLife ? new EnergyCounter(1, 0) :
@@ -24,7 +24,7 @@ namespace ReBeat.HarmonyPatches.Energy {
         }
 
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameEnergyCounter.LateUpdate))]
+        [HarmonyPatch("LateUpdate")]
         static void HandleWall(ref PlayerHeadAndObstacleInteraction ____playerHeadAndObstacleInteraction) {
             if (!Config.Instance.Enabled) return;
             if (____playerHeadAndObstacleInteraction.playerHeadIsInObstacle) {
@@ -43,7 +43,7 @@ namespace ReBeat.HarmonyPatches.Energy {
         }
 
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameEnergyCounter.ProcessEnergyChange))]
+        [HarmonyPatch("ProcessEnergyChange")]
         static void ProcessEnergyChange(GameEnergyCounter __instance, ref float energyChange) {
             if (!Config.Instance.Enabled) return;
             energyChange = 0f;
@@ -70,7 +70,7 @@ namespace ReBeat.HarmonyPatches.Energy {
         }
         
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameEnergyCounter.HandleNoteWasCut))]
+        [HarmonyPatch("HandleNoteWasCut")]
         static void NoteWasCut(NoteController noteController, NoteCutInfo noteCutInfo) {
             if (!Config.Instance.Enabled) return;
             switch (noteController.noteData.gameplayType) {
@@ -90,7 +90,7 @@ namespace ReBeat.HarmonyPatches.Energy {
         }
         
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameEnergyCounter.HandleNoteWasMissed))]
+        [HarmonyPatch("HandleNoteWasMissed")]
         static void NoteWasMissed(NoteController noteController) {
             if (!Config.Instance.Enabled) return;
             if (noteController.noteData.gameplayType != NoteData.GameplayType.Bomb) 
