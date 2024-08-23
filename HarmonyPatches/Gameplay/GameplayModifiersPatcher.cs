@@ -74,12 +74,12 @@ namespace ReBeat.HarmonyPatches.Gameplay {
             __result = GameplayModifiers.SongSpeed.Normal;
         }
         
-        [HarmonyPostfix]
+        /*[HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifiers.noArrows), MethodType.Getter)]
         static void NoArrows(ref bool __result) {
             if (!Config.Instance.Enabled) return;
             __result = Modifiers.instance.NoArrows;
-        }
+        }*/
         
         [HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifiers.proMode), MethodType.Getter)]

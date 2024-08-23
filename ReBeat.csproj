@@ -50,6 +50,9 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="BGNet">
+      <HintPath>E:\Games\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\BGNet.dll</HintPath>
+    </Reference>
     <Reference Include="BSML">
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
       <Private>False</Private>
@@ -77,6 +80,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="ScoreSaber">
+      <HintPath>E:\Games\Steam\steamapps\common\Beat Saber\Plugins\ScoreSaber.dll</HintPath>
     </Reference>
     <Reference Include="SiraUtil">
       <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
@@ -177,6 +183,7 @@
     <Compile Include="HarmonyPatches\Gameplay\NjsAdjustment.cs" />
     <Compile Include="HarmonyPatches\Gameplay\NoteColliderSize.cs" />
     <Compile Include="HarmonyPatches\Score\AngleCutScore.cs" />
+    <Compile Include="HarmonyPatches\Score\BeatleaderModifiers.cs" />
     <Compile Include="HarmonyPatches\Score\CenterCutScore.cs" />
     <Compile Include="HarmonyPatches\Score\DisableComboMultiplier.cs" />
     <Compile Include="HarmonyPatches\Score\ModMultiplierPatch.cs" />
@@ -185,7 +192,6 @@
     <Compile Include="HarmonyPatches\UI\AddCustomCharacteristic.cs" />
     <Compile Include="HarmonyPatches\UI\DisplayRank.cs" />
     <Compile Include="HarmonyPatches\UI\EnergyUI.cs" />
-    <Compile Include="HarmonyPatches\UI\HideModifiersPanel.cs" />
     <Compile Include="HarmonyPatches\UI\Modifiers.cs" />
     <Compile Include="HarmonyPatches\UI\RelativeScore.cs" />
     <Compile Include="Plugin.cs" />

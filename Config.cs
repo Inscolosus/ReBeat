@@ -12,13 +12,13 @@ namespace ReBeat {
             get => _enabled;
             set {
                 if (value) {
-                    BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("ReBeat");
+                    //BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("ReBeat");
                 }
                 else {
-                    BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
+                    //BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
                 }
                 _enabled = value;
-                HideModifiersPanel.GsvcInstance.RefreshContent(); // this causes a null reference exception somewhere in the game but everything seems to still work fine
+               // HideModifiersPanel.GsvcInstance.RefreshContent(); // this causes a null reference exception somewhere in the game but everything seems to still work fine
             }
         }
 
