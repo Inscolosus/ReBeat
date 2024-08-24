@@ -16,7 +16,7 @@ namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
         [HarmonyPostfix]
         [HarmonyPatch("HandleNoteMovementNoteDidMoveInJumpPhase")]
         static void FadeMesh(DisappearingArrowControllerBase<GameNoteController> __instance) {
-            if (!Config.Instance.Enabled || Modifiers.instance.GhostNotes) return;
+            if (!Config.Instance.Enabled || Modifiers.instance.GhostNotes || Modifiers.instance.DisappearingArrows) return;
             if (!(__instance is DisappearingArrowController dac)) return;
             
             float dist = ArrowControllerController(ref dac).noteMovement.distanceToPlayer;
@@ -32,7 +32,7 @@ namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
                 if (!cutoutEffect.name.Equals("NoteCube")) continue;
 
                 float val = Mathf.Clamp01((dist - FadeEndDistance) / FadeDistanceDuration);
-                val = val < 0.25 ? 0 : val; // I don't remember why this is needed, but I don't think it works without it lohl
+                val = val < 0.25 ? 0 : val; // the notes don't fully disappear without this
                 cutoutEffect.SetCutout(1f - val);
 
                 break;

@@ -1,5 +1,4 @@
 ﻿<settings-container>
-	<checkbox-setting apply-on-change="true" value="Enabled" text="Enable Plugin"/>
   <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show % of max score instead of acc"/>
   <checkbox-setting apply-on-change="true" value="UseLeftColor" text="Use Left Color"/>
   <horizontal>

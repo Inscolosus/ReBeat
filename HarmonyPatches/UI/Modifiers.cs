@@ -31,6 +31,14 @@ namespace ReBeat.HarmonyPatches.UI {
             }
         }
 
+        public GameplayModifiers.EnabledObstacleType EnabledObstacleType => NoWalls
+                ? GameplayModifiers.EnabledObstacleType.NoObstacles
+                : GameplayModifiers.EnabledObstacleType.All;
+        public GameplayModifiers.SongSpeed SongSpeed => SuperFastSong ? GameplayModifiers.SongSpeed.SuperFast :
+                FasterSong ? GameplayModifiers.SongSpeed.Faster :
+                SlowerSong ? GameplayModifiers.SongSpeed.Slower : 
+                GameplayModifiers.SongSpeed.Normal;
+
         private bool[] GetModifiers() {
             return new[] { _noFail, _oneLife, _oneHp, _noBombs, _noWalls, _easyMode, _hidden, _disappearingArrows, _sameColor, 
                 _proMode, _ghostNotes, _slowerSong, _fasterSong, _superFastSong, _noArrows, _smallNotes };
@@ -56,6 +64,7 @@ namespace ReBeat.HarmonyPatches.UI {
         
         
         private bool _noFail;
+
         [UIValue("NoFail")]
         public bool NoFail {
             get => _noFail;

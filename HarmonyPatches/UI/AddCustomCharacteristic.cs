@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using IPA.Utilities;
+using ReBeat.HarmonyPatches.Gameplay;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -17,9 +18,7 @@ namespace ReBeat.HarmonyPatches.UI {
             // copy all diffs to our characteristic
             // hide all other characteristics 
             // obv this won't work for maps that have other characteristics (lawless etc.) but it should be fine for now
-            Plugin.Log.Info(level.GetType().ToString());
             
-            if (!Config.Instance.Enabled) return;
             if (!(level is CustomBeatmapLevel)) return;
             if (!level.beatmapLevelData.difficultyBeatmapSets.Any()) return;
             if (level.beatmapLevelData.difficultyBeatmapSets.Any(x => x.beatmapCharacteristic.serializedName.Contains("ReBeat"))) return;
@@ -62,14 +61,13 @@ namespace ReBeat.HarmonyPatches.UI {
                 ?.SetValue(level.beatmapLevelData, characteristics.ToArray());
         }
 
-        internal static bool IsRebeat;
         [HarmonyPostfix]
         [HarmonyPatch(nameof(StandardLevelDetailView.RefreshContent))]
-        static void CharacteristicSelected(IDifficultyBeatmap ____selectedDifficultyBeatmap) {
+        static void CharacteristicSelected(IDifficultyBeatmap ____selectedDifficultyBeatmap, PlayerData ____playerData) {
             bool rebeat = ____selectedDifficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName
                 .Contains("ReBeat");
-            if (IsRebeat == rebeat) return;
-            IsRebeat = rebeat;
+            if (Config.Instance.Enabled == rebeat) return;
+            Config.Instance.Enabled = rebeat;
             Test3.GsvcInstance.RefreshContent();
         }
         
@@ -78,23 +76,6 @@ namespace ReBeat.HarmonyPatches.UI {
     // TODO: move to file
     [HarmonyPatch(typeof(MenuTransitionsHelper))]
     class LevelStart {
-        [HarmonyPostfix]
-        [HarmonyPatch(nameof(MenuTransitionsHelper.StartStandardLevel), typeof(string), typeof(IDifficultyBeatmap),
-            typeof(IPreviewBeatmapLevel), typeof(OverrideEnvironmentSettings), typeof(ColorScheme),
-            typeof(GameplayModifiers), typeof(PlayerSpecificSettings), typeof(PracticeSettings), typeof(string),
-            typeof(bool), typeof(bool), typeof(Action), typeof(Action<DiContainer>),
-            typeof(Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults>),
-            typeof(Action<LevelScenesTransitionSetupDataSO, LevelCompletionResults>))]
-        static void CheckCharacteristic(IDifficultyBeatmap difficultyBeatmap) {
-            BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("ReBeat");
-            if (!(difficultyBeatmap is CustomDifficultyBeatmap diff)) return;
-
-            if (diff.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Contains("ReBeat")) {
-                if (Config.Instance.Enabled) BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
-            }
-            else if (!Config.Instance.Enabled) BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
-        }
-
         [HarmonyPrefix]
         [HarmonyPatch(nameof(MenuTransitionsHelper.StartStandardLevel), typeof(string), typeof(IDifficultyBeatmap),
             typeof(IPreviewBeatmapLevel), typeof(OverrideEnvironmentSettings), typeof(ColorScheme),
@@ -113,19 +94,14 @@ namespace ReBeat.HarmonyPatches.UI {
             g.GetField("_noFailOn0Energy", b).SetValue(gameplayModifiers, m.NoFail);
             g.GetField("_instaFail", b).SetValue(gameplayModifiers, m.OneLife);
             g.GetField("_failOnSaberClash", b).SetValue(gameplayModifiers, false);
-            g.GetField("_enabledObstacleType", b).SetValue(gameplayModifiers, m.NoWalls
-                    ? GameplayModifiers.EnabledObstacleType.NoObstacles
-                    : GameplayModifiers.EnabledObstacleType.All);
+            g.GetField("_enabledObstacleType", b).SetValue(gameplayModifiers, m.EnabledObstacleType);
             g.GetField("_noBombs", b).SetValue(gameplayModifiers, m.NoBombs);
             g.GetField("_fastNotes", b).SetValue(gameplayModifiers, false);
             g.GetField("_strictAngles", b).SetValue(gameplayModifiers, false);
             g.GetField("_disappearingArrows", b).SetValue(gameplayModifiers, m.DisappearingArrows);
-            g.GetField("_songSpeed", b).SetValue(gameplayModifiers,
-                m.SuperFastSong ? GameplayModifiers.SongSpeed.SuperFast :
-                m.FasterSong ? GameplayModifiers.SongSpeed.Faster :
-                m.SlowerSong ? GameplayModifiers.SongSpeed.Slower : GameplayModifiers.SongSpeed.Normal);
-            g.GetField("_noArrows", b).SetValue(gameplayModifiers, true);//;m.NoArrows);
-            g.GetField("_ghostNotes", b).SetValue(gameplayModifiers, m.GhostNotes);
+            g.GetField("_songSpeed", b).SetValue(gameplayModifiers, m.SongSpeed);
+            g.GetField("_noArrows", b).SetValue(gameplayModifiers, m.NoArrows);
+            g.GetField("_ghostNotes", b).SetValue(gameplayModifiers, m.GhostNotes || m.Hidden);
             g.GetField("_proMode", b).SetValue(gameplayModifiers, m.ProMode);
             g.GetField("_zenMode", b).SetValue(gameplayModifiers, false);
             g.GetField("_smallCubes", b).SetValue(gameplayModifiers, m.SmallNotes);
@@ -136,8 +112,29 @@ namespace ReBeat.HarmonyPatches.UI {
     class Test3 {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(GameplaySetupViewController.RefreshContent))]
-        static void Brubb(ref bool ____showModifiers) {
-            ____showModifiers = !AddCustomCharacteristic.IsRebeat;
+        static void Brubb(ref bool ____showModifiers, ref GameplayModifiersPanelController ____gameplayModifiersPanelController) {
+            ____showModifiers = !Config.Instance.Enabled;
+            if (!Config.loadMods || Config.modifiers is null) return;
+            
+            var m = Config.modifiers;
+            Plugin.Log.Info(m.energyType.ToString());
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_energyType", m.energyType);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_noFailOn0Energy", m.noFailOn0Energy);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_instaFail", m.instaFail);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_failOnSaberClash", m.failOnSaberClash);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_enabledObstacleType", m.enabledObstacleType);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_noBombs", m.noBombs);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_fastNotes", m.fastNotes);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_strictAngles", m.strictAngles);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_disappearingArrows", m.disappearingArrows);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_songSpeed", m.songSpeed);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_noArrows", m.noArrows);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_ghostNotes", m.ghostNotes);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_proMode", m.proMode);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_zenMode", m.zenMode);
+            ____gameplayModifiersPanelController.gameplayModifiers.SetField("_smallCubes", m.smallCubes);
+
+            Config.loadMods = false;
         }
 
         internal static GameplaySetupViewController GsvcInstance;
@@ -145,6 +142,17 @@ namespace ReBeat.HarmonyPatches.UI {
         [HarmonyPatch(nameof(GameplaySetupViewController.Setup))]
         static void Ddeez(GameplaySetupViewController __instance) {
             GsvcInstance = __instance;
+        }
+    }
+
+    [HarmonyPatch(typeof(GameplayModifiersPanelController))]
+    class SaveMods {
+        [HarmonyPostfix]
+        [HarmonyPatch(nameof(GameplayModifiersPanelController.Awake))]
+        static void J(GameplayModifiersPanelController __instance) {
+            __instance.didChangeGameplayModifiersEvent += () => {
+                if (!Config.Instance.Enabled) Config.modifiers = __instance.gameplayModifiers.CopyWith();
+            };
         }
     }
 }

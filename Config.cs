@@ -6,19 +6,16 @@ using ReBeat.HarmonyPatches.UI;
 namespace ReBeat {
 	public class Config {
         public static Config Instance;
-        private bool _enabled;
 
-        public virtual bool Enabled {
+        internal static GameplayModifiers modifiers;
+        internal static bool loadMods;
+        // move this to plugin
+        private bool _enabled;
+        public bool Enabled {
             get => _enabled;
-            set {
-                if (value) {
-                    //BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("ReBeat");
-                }
-                else {
-                    //BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
-                }
+            set { 
+                loadMods = !value;
                 _enabled = value;
-               // HideModifiersPanel.GsvcInstance.RefreshContent(); // this causes a null reference exception somewhere in the game but everything seems to still work fine
             }
         }
 
