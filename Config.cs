@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using IPA.Config.Stores.Attributes;
+using IPA.Config.Stores.Converters;
 using ReBeat.HarmonyPatches.Score;
 using ReBeat.HarmonyPatches.UI;
 
@@ -24,6 +27,8 @@ namespace ReBeat {
         public virtual float ColorRed { get; set; } = 0f;
         public virtual float ColorGreen { get; set; } = 145f;
         public virtual float ColorBlue { get; set; } = 255f;
+        [UseConverter(typeof(ListConverter<bool>))]
+        public virtual List<bool> Modifiers { get; set; } = new List<bool>(16);
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).

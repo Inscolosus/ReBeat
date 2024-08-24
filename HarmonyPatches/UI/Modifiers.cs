@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using TMPro;
@@ -12,21 +14,45 @@ namespace ReBeat.HarmonyPatches.UI {
         [UIComponent("MaxRank")] private TextMeshProUGUI maxRank;
 
         public override void OnEnable() {
+            LoadModifiers(Config.Instance.Modifiers.ToArray());
             PropertyChanged += OnPropertyChanged;
         }
-                                                     // nf  1l 1hp  nb  nw   easy  hidden da  sameColor
-        private static readonly float[] Multipliers = { 0f, 0f, 0f, 0f, 0f, -0.4f, 0.05f, 0f, 0.07f,
-         // pro   gn     ss    fs    sfs    na  sn
-            0.12f, 0f, -0.5f, 0.07f, 0.15f, 0f, 0f };
 
+        private void LoadModifiers(bool[] modifiers) {
+            if (modifiers.Length != 16) return;
+
+            NoFail = modifiers[0];
+            OneLife = modifiers[1];
+            OneHp = modifiers[2];
+            NoBombs = modifiers[3];
+            NoWalls = modifiers[4];
+            EasyMode = modifiers[5];
+            Hidden = modifiers[6];
+            DisappearingArrows = modifiers[7];
+            SameColor = modifiers[8];
+            ProMode = modifiers[9];
+            GhostNotes = modifiers[10];
+            SlowerSong = modifiers[11];
+            FasterSong = modifiers[12];
+            SuperFastSong = modifiers[13];
+            NoArrows = modifiers[14];
+            SmallNotes = modifiers[15];
+        }
+                                                     // nf  1l 1hp    nb     nw    easy  hidden da  sameColor
+        private static readonly float[] Multipliers = { 0f, 0f, 0f, -0.4f, -0.4f, -0.4f, 0.05f, 0f, 0.07f,
+         // pro   gn     ss    fs    sfs     na  sn
+            0.12f, 0f, -0.5f, 0.07f, 0.15f, -1f, 0f };
+        
         public float Multiplier {
             get {
+                if (NoArrows) return 0;
                 var mods = GetModifiers();
                 float multiplier = 1f;
                 for (int i = 0; i < mods.Length; i++) {
                     if (mods[i]) multiplier += Multipliers[i];
                 }
 
+                if (multiplier <= 0) return 0;
                 return multiplier;
             }
         }
@@ -44,6 +70,8 @@ namespace ReBeat.HarmonyPatches.UI {
                 _proMode, _ghostNotes, _slowerSong, _fasterSong, _superFastSong, _noArrows, _smallNotes };
         }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            Config.Instance.Modifiers = new List<bool>(GetModifiers());
+            
             Color color = Multiplier >= 1 ? new Color(0f, 0.75f, 1f) : new Color(1f, 0.37f, 0f);
             multiplierValue.color = color;
             multiplierValue.text = Multiplier.ToString("P0");
@@ -61,7 +89,12 @@ namespace ReBeat.HarmonyPatches.UI {
             return "E";
         }
 
+
+        [UIValue("multiplier")] private string multiplierText => Multiplier.ToString("P0");
+        [UIValue("rank")] private string rankText => MaxRank(Multiplier);
+        [UIValue("text-color")] private string textColor => Multiplier >= 1 ? "#00C0FF" : "#FF5F00";
         
+
         
         private bool _noFail;
 

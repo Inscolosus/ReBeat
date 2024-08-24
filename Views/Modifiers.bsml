@@ -1,9 +1,9 @@
 ﻿<vertical>
     <horizontal>
         <text text="Total Score" align="Baseline" italics="true" font-size="5" />
-        <text id="MultiplierValue" text="100 %" align="Baseline" italics="true" font-size="7" color="#00C0FF" /> <!-- bad color FF5F00 -->
+        <text id="MultiplierValue" text="~multiplier" align="Baseline" italics="true" font-size="7" color="~text-color"/>
         <text text="Max Rank" align="Baseline" italics="true" font-size="5" />
-        <text id="MaxRank" text="SS" align="Baseline" italics="true" font-size="7" color="#00C0FF" />
+        <text id="MaxRank" text="~rank" align="Baseline" italics="true" font-size="7" color="~text-color" />
     </horizontal>
     <horizontal>
         <vertical min-width="30">
