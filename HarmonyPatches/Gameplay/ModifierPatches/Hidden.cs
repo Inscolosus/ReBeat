@@ -3,6 +3,7 @@ using ReBeat.HarmonyPatches.UI;
 using UnityEngine;
 
 namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
+    // ty kinsi
     [HarmonyPatch(typeof(DisappearingArrowControllerBase<GameNoteController>))]
     class Hidden {
         static readonly IPA.Utilities.FieldAccessor<DisappearingArrowController, GameNoteController>.Accessor ArrowControllerController =

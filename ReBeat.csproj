@@ -182,18 +182,22 @@
     <Compile Include="HarmonyPatches\Gameplay\ModifierPatches\SameColor.cs" />
     <Compile Include="HarmonyPatches\Gameplay\NjsAdjustment.cs" />
     <Compile Include="HarmonyPatches\Gameplay\NoteColliderSize.cs" />
+    <Compile Include="HarmonyPatches\Gameplay\SetModifiers.cs" />
     <Compile Include="HarmonyPatches\Score\AngleCutScore.cs" />
     <Compile Include="HarmonyPatches\Score\BeatleaderModifiers.cs" />
     <Compile Include="HarmonyPatches\Score\CenterCutScore.cs" />
     <Compile Include="HarmonyPatches\Score\DisableComboMultiplier.cs" />
+    <Compile Include="HarmonyPatches\Score\DisableScoresaberSubmission.cs" />
     <Compile Include="HarmonyPatches\Score\ModMultiplierPatch.cs" />
     <Compile Include="HarmonyPatches\Score\ScoreController.cs" />
     <Compile Include="HarmonyPatches\Score\SwingRating.cs" />
     <Compile Include="HarmonyPatches\UI\AddCustomCharacteristic.cs" />
+    <Compile Include="HarmonyPatches\UI\CopyModifiers.cs" />
     <Compile Include="HarmonyPatches\UI\DisplayRank.cs" />
     <Compile Include="HarmonyPatches\UI\EnergyUI.cs" />
     <Compile Include="HarmonyPatches\UI\Modifiers.cs" />
     <Compile Include="HarmonyPatches\UI\RelativeScore.cs" />
+    <Compile Include="HarmonyPatches\UI\ResetModifiers.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

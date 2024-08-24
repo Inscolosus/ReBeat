@@ -34,9 +34,9 @@ namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
             if (!Config.Instance.Enabled) return true;
             if (!Modifiers.instance.SameColor) return true;
 
-            float h, s, v;
-            if (Config.Instance.UseLeftColor) Color.RGBToHSV(____colorScheme.saberAColor, out h, out s, out v);
-            else Color.RGBToHSV(____colorScheme.saberBColor, out h, out s, out v);
+            float h, s;
+            if (Config.Instance.UseLeftColor) Color.RGBToHSV(____colorScheme.saberAColor, out h, out s, out _);
+            else Color.RGBToHSV(____colorScheme.saberBColor, out h, out s, out _);
             
             __result = Color.HSVToRGB(h, s, 1f);
             return false;

@@ -23,15 +23,4 @@ namespace ReBeat.HarmonyPatches.Score {
             if (m.OneHp) __result.Add("OHP");
         }
     }
-
-    [HarmonyPatch(typeof(ScoreSaber.Plugin))]
-    class ScoresaberSubmission {
-        [HarmonyPrefix]
-        [HarmonyPatch(nameof(ScoreSaber.Plugin.ScoreSubmission), MethodType.Getter)]
-        static bool Brub(bool __result) {
-            if (!Config.Instance.Enabled) return true;
-            __result = false;
-            return false;
-        }
-    }
 }
