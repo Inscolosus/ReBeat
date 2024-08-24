@@ -17,7 +17,10 @@ namespace ReBeat.HarmonyPatches.Score {
 
             __result.Remove("BE");
             var m = Modifiers.instance;
-            if (m.Hidden) __result.Add("HD");
+            if (m.Hidden) {
+                __result.Add("HD");
+                __result.Remove("GN");
+            }
             if (m.SameColor) __result.Add("SMC");
             if (m.EasyMode) __result.Add("EZ");
             if (m.OneHp) __result.Add("OHP");
