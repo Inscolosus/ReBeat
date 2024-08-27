@@ -76,7 +76,7 @@ Misses - where a = map note count, and b = misses:
 
 [![miss curve](./Assets/misscurve.jpg)](https://www.desmos.com/calculator/p1ocyjidpz)
 
-Combo - where a = map not count, and c = max combo:
+Combo - where a = map note count, and c = max combo:
 
 [![combo curve](./Assets/combocurve.jpg)](https://www.desmos.com/calculator/p1ocyjidpz)
 
