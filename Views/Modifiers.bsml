@@ -13,12 +13,12 @@
             <modifier value="SameColor" bind-value="true" on-change="SetSameColor" text="Same Color (+7%)" src="#ProModeIcon" />
         </vertical>
         <vertical child-expand-height="false" min-width="30">
-            <modifier value="OneLife" bind-value="true" on-change="SetOneLife" text="1 Life" src="#OneLifeIcon" />
+            <modifier value="OneLife" bind-value="true" on-change="SetOneLife" text="One Life" src="#OneLifeIcon" />
             <modifier value="FasterSong" bind-value="true" on-change="SetFasterSong" text="Faster Song (+7%)" src="#FasterSongIcon" />
             <modifier value="ProMode" bind-value="true" on-change="SetProMode" text="Pro Mode (+12%)" src="#PreciseAnglesIcon" />
         </vertical>
         <vertical child-expand-height="false" min-width="30">
-            <modifier value="OneHp" bind-value="true" on-change="SetOneHp" text="1 HP" src="#FourLivesIcon" />
+            <modifier value="OneHp" bind-value="true" on-change="SetOneHp" text="One HP" src="#FourLivesIcon" />
             <modifier value="SuperFastSong" bind-value="true" on-change="SetSuperFastSong" text="Super Fast Song (+15%)" src="#SuperFastSongIcon" />
             <modifier value="Hidden"  bind-value="true" on-change="SetHidden" text="Hidden (+5%)" src="#SmallNotesIcon" />
         </vertical>

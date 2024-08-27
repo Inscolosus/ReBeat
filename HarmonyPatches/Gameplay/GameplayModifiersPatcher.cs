@@ -7,9 +7,8 @@ namespace ReBeat.HarmonyPatches.Gameplay {
         public static float SongSpeedMultiplier { get; private set; }
         [HarmonyPostfix]
         [HarmonyPatch(nameof(GameplayModifiers.songSpeedMul), MethodType.Getter)]
-        static void SongSpeedMul(ref float __result) {
+        static void SongSpeedMul(float __result) {
             if (!Config.Instance.Enabled) return;
-            if (__result < 0.9f) __result = 0.75f;
             SongSpeedMultiplier = __result;
         }
         
