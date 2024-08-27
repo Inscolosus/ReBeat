@@ -13,7 +13,7 @@ Accuracy has also been changed—instead of an even spread of points from the ce
 
 ![accuracy](./Assets/acc2.jpg)
 
-The size of these sectors is changed by some modifiers:
+#### The size of these sectors is changed by some modifiers
 
 | Easy Mode | Normal  | Pro Mode | Points  |
 |:---------:|:-------:|:--------:|:-------:|
@@ -46,11 +46,11 @@ The number of notes required to regenerate a segment of shield is determined by 
   - Increases NJS
   - Decreases cut angle tolerance to 75°
   - Decreases note hitbox size (0.45m³)
-  - Harsher accuracy (list this later)
+  - Harsher accuracy [(see table)](#the-size-of-these-sectors-is-changed-by-some-modifiers)
 - Easy Mode
   - Increases cut angle tolerance to 105°
   - Increases note hitbox size (0.8m x 0.5m x 0.8m)
-  - Lenient accuracy (list this later)
+  - Lenient accuracy [(see table)](#the-size-of-these-sectors-is-changed-by-some-modifiers)
 - Hidden
   - Notes spawn in as full blocks and fade away
 - Same Color
