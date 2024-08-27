@@ -54,7 +54,7 @@ The number of notes required to regenerate a segment of shield is determined by 
 - Hidden
   - Notes spawn in as full blocks and fade away
 - Same Color
-  - all notes appear the same color
+  - All notes appear the same color
 ### Altered Modifiers
 - Faster Song now increases NJS by 10% (was 20%)
 - Super Fast Song now increases NJS by 30% (was 50%)
