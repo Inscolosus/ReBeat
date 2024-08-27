@@ -10,6 +10,7 @@ The maximum cut score is now 100, consisting of:
 The angle required for full pre- and post-swing points has been reduced to 95° and 55°, respectively.
 
 Accuracy has also been changed—instead of an even spread of points from the center, there are now larger sectors that give set point values:
+
 ![accuracy](./Assets/acc2.jpg)
 
 The size of these sectors is changed by some modifiers:
@@ -32,6 +33,7 @@ Upon missing a note (or wall put description here later) a segment will be lost.
 Shield can be recovered back to a maximum of four segments by holding a combo. Heath is lost permanently.
 
 The number of notes required to regenerate a segment of shield is determined by this curve, where x is the map's nps:
+
 [![nps curve](./Assets/npscurve.jpg)](https://www.desmos.com/calculator/y3kubp0qxd)
 ### Other
 - Cut angle tolerance has been reduced to 90° (originally 120°)
@@ -69,6 +71,15 @@ These modifiers don't fit in to ReBeat and so will not positively affect your sc
 - Zen Mode
 ## Score Algorithm
 Score is calculated from three curves (below) as 1000000 * (0.3M + 0.3C + 0.4A)
-Misses - where a = map note count, and b = misses: ![miss curve](./Assets/misscurve.jpg)
-Combo - where a = map not count, and c = max combo: ![combo curve](./Assets/combocurve.jpg)
-Accuracy - where d = accuracy (avg note score): ![acc curve](./Assets/acccurve.jpg)
+
+Misses - where a = map note count, and b = misses: 
+
+[![miss curve](./Assets/misscurve.jpg)](https://www.desmos.com/calculator/p1ocyjidpz)
+
+Combo - where a = map not count, and c = max combo:
+
+[![combo curve](./Assets/combocurve.jpg)](https://www.desmos.com/calculator/p1ocyjidpz)
+
+Accuracy - where d = accuracy (avg note score): 
+
+[![acc curve](./Assets/acccurve.jpg)](https://www.desmos.com/calculator/p1ocyjidpz)
