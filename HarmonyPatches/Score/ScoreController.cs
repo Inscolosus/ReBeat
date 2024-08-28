@@ -20,7 +20,8 @@ namespace ReBeat.HarmonyPatches.Score {
             TotalCutScore = 0;
             TotalNotes = 0;
         }
-        
+
+        //private static string prev = "";
         [HarmonyPostfix]
         [HarmonyPatch(nameof(global::ScoreController.LateUpdate))]
         static void ScoreUpdate(ref int ____multipliedScore, ref int ____modifiedScore,
@@ -42,7 +43,14 @@ namespace ReBeat.HarmonyPatches.Score {
 
             int score = TotalCutScore == 0 || TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)TotalNotes / (double)noteCount));
             ____multipliedScore = score;
-            ____immediateMaxPossibleMultipliedScore = (int)(1_000_000d * ((double)TotalNotes / (double)noteCount)); 
+            ____immediateMaxPossibleMultipliedScore = (int)(1_000_000d * ((double)TotalNotes / (double)noteCount));
+
+            // honestly just gonna leave this in case there's another score issue
+            /*string s = $"{acc} {noteCount} {misses} {maxCombo} | {missCountCurve} {maxComboCurve} {accCurve} | {score}";
+            if (s != prev) {
+                Plugin.Log.Info(s);
+                prev = s;
+            }*/
 
             float totalMultiplier = ____gameplayModifiersModel.GetTotalMultiplier(____gameplayModifierParams, ____gameEnergyCounter.energy);
             ____modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(____multipliedScore, totalMultiplier);
