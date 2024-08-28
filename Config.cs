@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
-using ReBeat.HarmonyPatches.Score;
-using ReBeat.HarmonyPatches.UI;
 
 namespace ReBeat {
 	public class Config {
         public static Config Instance;
-
+        
         internal static GameplayModifiers modifiers;
         internal static bool loadMods;
-        // move this to plugin
         private bool _enabled;
         public bool Enabled {
             get => _enabled;

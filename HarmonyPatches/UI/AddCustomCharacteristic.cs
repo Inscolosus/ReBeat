@@ -10,7 +10,7 @@ namespace ReBeat.HarmonyPatches.UI {
     class AddCustomCharacteristic {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(StandardLevelDetailView.SetContent))]
-        static void AddCharacteristic(IBeatmapLevel level) {
+        static void AddCharacteristic(IBeatmapLevel level, ref BeatmapCharacteristicSO defaultBeatmapCharacteristic) {
             // copy all diffs to our characteristic
             // hide all other characteristics 
             // obv this won't work for maps that have other characteristics (lawless etc.) but it should be fine for now
@@ -21,7 +21,7 @@ namespace ReBeat.HarmonyPatches.UI {
             if (level.beatmapLevelData.difficultyBeatmapSets.All(x => x.beatmapCharacteristic.serializedName != "Standard")) return; // only standard for now
 
             BeatmapCharacteristicSO rebeatStandardCharacteristic = BeatmapCharacteristicSO.CreateInstance<BeatmapCharacteristicSO>();
-            Sprite icon = SongCore.Utilities.Utils.LoadSpriteFromResources("ReBeat.Assets.libertybruh.png");
+            Sprite icon = SongCore.Utilities.Utils.LoadSpriteFromResources("ReBeat.Assets.icon.png");
             rebeatStandardCharacteristic.SetField("_icon", icon);
             rebeatStandardCharacteristic.SetField("_descriptionLocalizationKey", "ReBeat_Standard");
             rebeatStandardCharacteristic.SetField("_characteristicNameLocalizationKey", "ReBeat_Standard");
@@ -57,8 +57,10 @@ namespace ReBeat.HarmonyPatches.UI {
             level.beatmapLevelData.GetType().GetField("_difficultyBeatmapSets",
                     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                 ?.SetValue(level.beatmapLevelData, characteristics.ToArray());
-        }
 
+            if (Config.Instance.Enabled) defaultBeatmapCharacteristic = rebeatStandardCharacteristic;
+        }
+        
         [HarmonyPostfix]
         [HarmonyPatch(nameof(StandardLevelDetailView.RefreshContent))]
         static void CharacteristicSelected(IDifficultyBeatmap ____selectedDifficultyBeatmap) {
