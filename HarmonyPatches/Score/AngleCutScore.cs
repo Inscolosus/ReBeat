@@ -10,8 +10,8 @@ namespace ReBeat.HarmonyPatches.Score {
             { NoteData.ScoringType.Normal,             new ScoreModel.NoteScoreDefinition(50, 0,  30, 0,  20, 0) },
             { NoteData.ScoringType.SliderHead,         new ScoreModel.NoteScoreDefinition(50, 0,  30, 20, 20, 0) },
             { NoteData.ScoringType.SliderTail,         new ScoreModel.NoteScoreDefinition(50, 30, 30, 0,  20, 0) },
-            { NoteData.ScoringType.BurstSliderHead,    new ScoreModel.NoteScoreDefinition(50, 0,  30, 0,  0,  0) },
-            { NoteData.ScoringType.BurstSliderElement, new ScoreModel.NoteScoreDefinition(0,  0,  0,  0,  0,  20) }
+            { NoteData.ScoringType.BurstSliderHead,    new ScoreModel.NoteScoreDefinition(50, 0,  50, 0,  0,  0) }, // hopefully these last two don't cause problems later lohl
+            { NoteData.ScoringType.BurstSliderElement, new ScoreModel.NoteScoreDefinition(0,  0,  0,  0,  0,  100) }
         };
 
         [HarmonyPostfix]

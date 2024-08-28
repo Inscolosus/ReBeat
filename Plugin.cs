@@ -30,6 +30,8 @@ namespace ReBeat {
             BSMLSettings.instance.AddSettingsMenu("ReBeat", "ReBeat.Views.Menu.bsml", Config.Instance);
             GameplaySetup.instance.AddTab("ReBeat", "ReBeat.Views.Menu.bsml", Config.Instance, MenuType.All);
             GameplaySetup.instance.AddTab("Modifiers", "ReBeat.Views.Modifiers.bsml", Modifiers.instance, MenuType.All);
+
+            if (Config.Instance.Enabled) Config.modifiers = new GameplayModifiers(); // reset saved mods if game was closed with plugin enabled
         }
 
         [OnExit]

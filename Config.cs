@@ -1,25 +1,19 @@
-﻿using System;
-using System.Reflection;
-using ReBeat.HarmonyPatches.Score;
-using ReBeat.HarmonyPatches.UI;
+﻿using System.Collections.Generic;
+using IPA.Config.Stores.Attributes;
+using IPA.Config.Stores.Converters;
 
 namespace ReBeat {
 	public class Config {
         public static Config Instance;
+        
+        internal static GameplayModifiers modifiers;
+        internal static bool loadMods;
         private bool _enabled;
-
-        public virtual bool Enabled {
+        public bool Enabled {
             get => _enabled;
-            set {
-                if (value) {
-                    BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("ReBeat");
-                }
-                else {
-                    BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("ReBeat");
-                }
+            set { 
+                loadMods = !value;
                 _enabled = value;
-                // doesn't work anymore anyway bc it's private now
-                //HideModifiersPanel.GsvcInstance.RefreshContent(); // this causes a null reference exception somewhere in the game but everything seems to still work fine
             }
         }
 
@@ -28,6 +22,8 @@ namespace ReBeat {
         public virtual float ColorRed { get; set; } = 0f;
         public virtual float ColorGreen { get; set; } = 145f;
         public virtual float ColorBlue { get; set; } = 255f;
+        [UseConverter(typeof(ListConverter<bool>))]
+        public virtual List<bool> Modifiers { get; set; } = new List<bool>(16);
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
