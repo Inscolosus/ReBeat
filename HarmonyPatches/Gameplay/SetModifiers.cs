@@ -5,9 +5,11 @@ using ReBeat.HarmonyPatches.UI;
 using Zenject;
 
 namespace ReBeat.HarmonyPatches.Gameplay {
-    [HarmonyPatch(typeof(MenuTransitionsHelper))]
+    [HarmonyPatch]
     class SetModifiers {
-        [HarmonyPatch(nameof(MenuTransitionsHelper.StartStandardLevel), typeof(string), typeof(IDifficultyBeatmap), typeof(IPreviewBeatmapLevel), typeof(OverrideEnvironmentSettings), typeof(ColorScheme), typeof(GameplayModifiers), typeof(PlayerSpecificSettings), typeof(PracticeSettings), typeof(string), typeof(bool), typeof(bool), typeof(Action), typeof(Action<DiContainer>), typeof(Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults>), typeof(Action<LevelScenesTransitionSetupDataSO, LevelCompletionResults>))]
+        static MethodBase TargetMethod() {
+            return AccessTools.FirstMethod(typeof(MenuTransitionsHelper), method => method.Name == "StartStandardLevel");
+        }
         static void Prefix(ref GameplayModifiers gameplayModifiers) {
             if (!Config.Instance.Enabled) return;
             

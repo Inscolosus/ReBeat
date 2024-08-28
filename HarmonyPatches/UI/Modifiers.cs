@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.Util;
 using TMPro;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace ReBeat.HarmonyPatches.UI {
         [UIComponent("MultiplierValue")] private TextMeshProUGUI multiplierValue;
         [UIComponent("MaxRank")] private TextMeshProUGUI maxRank;
 
-        public override void OnEnable() {
+        public Modifiers() {
             LoadModifiers(Config.Instance.Modifiers.ToArray());
             PropertyChanged += OnPropertyChanged;
         }

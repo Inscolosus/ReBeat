@@ -12,7 +12,7 @@ namespace ReBeat.HarmonyPatches.UI {
         }
         
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(GameplaySetupViewController.RefreshContent))]
+        [HarmonyPatch("RefreshContent")]
         static void LoadSavedModifiers(ref bool ____showModifiers, ref GameplayModifiersPanelController ____gameplayModifiersPanelController) {
             ____showModifiers = !Config.Instance.Enabled;
             if (!Config.loadMods || Config.modifiers is null) return;

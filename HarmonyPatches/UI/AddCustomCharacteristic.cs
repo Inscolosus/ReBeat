@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -9,17 +10,8 @@ namespace ReBeat.HarmonyPatches.UI {
     [HarmonyPatch(typeof(StandardLevelDetailView))]
     class AddCustomCharacteristic {
         [HarmonyPrefix]
-        [HarmonyPatch(nameof(StandardLevelDetailView.SetContent))]
-        static void AddCharacteristic(IBeatmapLevel level, ref BeatmapCharacteristicSO defaultBeatmapCharacteristic) {
-            // copy all diffs to our characteristic
-            // hide all other characteristics 
-            // obv this won't work for maps that have other characteristics (lawless etc.) but it should be fine for now
-            
-            if (!(level is CustomBeatmapLevel)) return;
-            if (!level.beatmapLevelData.difficultyBeatmapSets.Any()) return;
-            if (level.beatmapLevelData.difficultyBeatmapSets.Any(x => x.beatmapCharacteristic.serializedName.Contains("ReBeat"))) return;
-            if (level.beatmapLevelData.difficultyBeatmapSets.All(x => x.beatmapCharacteristic.serializedName != "Standard")) return; // only standard for now
-
+        [HarmonyPatch(nameof(StandardLevelDetailView.SetContent), typeof(BeatmapLevel), typeof(BeatmapDifficultyMask), typeof(HashSet<BeatmapCharacteristicSO>), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristicSO), typeof(PlayerData))]
+        static void AddCharacteristic(ref BeatmapLevel level, ref BeatmapCharacteristicSO defaultBeatmapCharacteristic) {
             BeatmapCharacteristicSO rebeatStandardCharacteristic = BeatmapCharacteristicSO.CreateInstance<BeatmapCharacteristicSO>();
             Sprite icon = SongCore.Utilities.Utils.LoadSpriteFromResources("ReBeat.Assets.icon.png");
             rebeatStandardCharacteristic.SetField("_icon", icon);
@@ -31,44 +23,46 @@ namespace ReBeat.HarmonyPatches.UI {
             rebeatStandardCharacteristic.SetField("_containsRotationEvents", false);
             rebeatStandardCharacteristic.SetField("_requires360Movement", false);
 
-            CustomDifficultyBeatmapSet rebeatStandardSet = new CustomDifficultyBeatmapSet(rebeatStandardCharacteristic);
-            IDifficultyBeatmapSet standardSet = null;
-            
-            foreach (var difficultyBeatmapSet in level.beatmapLevelData.difficultyBeatmapSets) {
-                if (difficultyBeatmapSet.beatmapCharacteristic.serializedName != "Standard") continue;
-                standardSet = difficultyBeatmapSet;
-                break;
-            }
-            if (standardSet is null) return;
-
-            var beatmaps = new List<CustomDifficultyBeatmap>();
-            foreach (var map in standardSet.difficultyBeatmaps) {
-                CustomDifficultyBeatmap m = (CustomDifficultyBeatmap)map;
-                beatmaps.Add(new CustomDifficultyBeatmap(map.level, rebeatStandardSet, map.difficulty, map.difficultyRank,
-                    map.noteJumpMovementSpeed, map.noteJumpStartBeatOffset, map.level.beatsPerMinute, m.beatmapSaveData,
-                    m.beatmapDataBasicInfo));
+            var beatmapBasicData = level.beatmapBasicData;
+            var rebeatCharData = new Dictionary<(BeatmapCharacteristicSO, BeatmapDifficulty), BeatmapBasicData>();
+            foreach (var entry in beatmapBasicData) {
+                rebeatCharData.Add(entry.Key, entry.Value);
+                if (entry.Key.Item1.serializedName != "Standard") continue;
+                rebeatCharData.Add((rebeatStandardCharacteristic, entry.Key.Item2), entry.Value);
             }
 
-            rebeatStandardSet.SetCustomDifficultyBeatmaps(beatmaps.ToArray());
-
-            var characteristics = new List<IDifficultyBeatmapSet>(level.beatmapLevelData.difficultyBeatmapSets);
-            characteristics.Add(rebeatStandardSet);
-
-            level.beatmapLevelData.GetType().GetField("_difficultyBeatmapSets",
-                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-                ?.SetValue(level.beatmapLevelData, characteristics.ToArray());
+            typeof(BeatmapLevel).GetField("beatmapBasicData", BindingFlags.Instance | BindingFlags.Public)
+                .SetValue(level, rebeatCharData);
 
             if (Config.Instance.Enabled) defaultBeatmapCharacteristic = rebeatStandardCharacteristic;
         }
         
+        
         [HarmonyPostfix]
         [HarmonyPatch(nameof(StandardLevelDetailView.RefreshContent))]
-        static void CharacteristicSelected(IDifficultyBeatmap ____selectedDifficultyBeatmap) {
-            bool rebeat = ____selectedDifficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName
+        static void CharacteristicSelected(BeatmapCharacteristicSegmentedControlController ____beatmapCharacteristicSegmentedControlController) {
+            bool rebeat = ____beatmapCharacteristicSegmentedControlController.selectedBeatmapCharacteristic.serializedName
                 .Contains("ReBeat");
             if (Config.Instance.Enabled == rebeat) return;
             Config.Instance.Enabled = rebeat;
-            ResetModifiers.GsvcInstance.RefreshContent();
+
+            Plugin.Log.Info("sjdhdkjshsdk");
+            // ReSharper disable once PossibleNullReferenceException
+            typeof(GameplaySetupViewController).InvokeMember("RefreshContent",
+                BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance, null,
+                ResetModifiers.GsvcInstance, Array.Empty<object>());
+            //.GetMethod("RefreshContent", BindingFlags.Instance | BindingFlags.NonPublic)
+            //.Invoke(ResetModifiers.GsvcInstance, new object[] { });
+        }
+    }
+
+    [HarmonyPatch(typeof(FileSystemBeatmapLevelData))]
+    class PatchBeatmapFile {
+        [HarmonyPrefix]
+        [HarmonyPatch("GetDifficultyBeatmap")]
+        static void ResetCharacteristic(ref BeatmapKey beatmapKey) {
+            if (beatmapKey.beatmapCharacteristic.serializedName != "ReBeat_Standard") return;
+            beatmapKey = new BeatmapKey(beatmapKey.levelId, standard, beatmapKey.difficulty);
         }
     }
 }
