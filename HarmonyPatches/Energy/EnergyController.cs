@@ -100,6 +100,7 @@ namespace ReBeat.HarmonyPatches.Energy {
         private static void HandleCut() {
             if (EnergyCounter.ShieldProgress >= EnergyCounter.ShieldRegen) return;
             if (Time.time - EnergyCounter.LastMiss < EnergyCounter.ShieldCooldown) return;
+            Plugin.Log.Info("HandleCut");
             
             EnergyCounter.ShieldProgress++;
 

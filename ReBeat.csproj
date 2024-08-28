@@ -136,7 +136,6 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="HarmonyPatches\BeamapData\AudioLength.cs" />
-    <Compile Include="HarmonyPatches\BeamapData\NoteCount.cs" />
     <Compile Include="HarmonyPatches\Energy\EnergyCounter.cs" />
     <Compile Include="HarmonyPatches\Energy\EnergyController.cs" />
     <Compile Include="HarmonyPatches\Gameplay\GameplayModifiersPatcher.cs" />

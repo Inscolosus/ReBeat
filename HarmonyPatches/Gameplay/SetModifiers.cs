@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Reflection;
 using HarmonyLib;
+using IPA.Utilities;
+using ReBeat.HarmonyPatches.BeamapData;
 using ReBeat.HarmonyPatches.UI;
 using Zenject;
 
 namespace ReBeat.HarmonyPatches.Gameplay {
     [HarmonyPatch]
     class SetModifiers {
+        internal static int NoteCount { get; private set; }
         static MethodBase TargetMethod() {
             return AccessTools.FirstMethod(typeof(MenuTransitionsHelper), method => method.Name == "StartStandardLevel");
         }
@@ -33,6 +36,11 @@ namespace ReBeat.HarmonyPatches.Gameplay {
             g.GetField("_proMode", b).SetValue(gameplayModifiers, m.ProMode);
             g.GetField("_zenMode", b).SetValue(gameplayModifiers, false);
             g.GetField("_smallCubes", b).SetValue(gameplayModifiers, m.SmallNotes);
+        }
+
+        static void Postfix(BeatmapLevel beatmapLevel, BeatmapKey beatmapKey) {
+            Plugin.Log.Info("data");
+            //BeatmapBasicData data = beatmapLevel.beatmapBasicData[(beatmapKey.beatmapCharacteristic, beatmapKey.difficulty)];
         }
     }
 }
