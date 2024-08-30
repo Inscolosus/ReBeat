@@ -148,7 +148,6 @@
     <Compile Include="HarmonyPatches\Score\BeatleaderModifiers.cs" />
     <Compile Include="HarmonyPatches\Score\CenterCutScore.cs" />
     <Compile Include="HarmonyPatches\Score\DisableComboMultiplier.cs" />
-    <Compile Include="HarmonyPatches\Score\DisableScoresaberSubmission.cs" />
     <Compile Include="HarmonyPatches\Score\ModMultiplierPatch.cs" />
     <Compile Include="HarmonyPatches\Score\ScoreController.cs" />
     <Compile Include="HarmonyPatches\Score\SwingRating.cs" />

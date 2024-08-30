@@ -15,6 +15,7 @@ namespace ReBeat {
             set { 
                 loadMods = !value;
                 _enabled = value;
+                ScoreSaber.Plugin.ScoreSubmission = !_enabled;
             }
         }
 
