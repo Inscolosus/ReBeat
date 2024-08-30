@@ -98,19 +98,19 @@ namespace ReBeat.HarmonyPatches.Energy {
         }
         
         private static void HandleCut() {
+            EnergyCounter.Combo++;
+            if (EnergyCounter.Combo > EnergyCounter.MaxCombo) EnergyCounter.MaxCombo = EnergyCounter.Combo;
+            
             if (EnergyCounter.ShieldProgress >= EnergyCounter.ShieldRegen) return;
             if (Time.time - EnergyCounter.LastMiss < EnergyCounter.ShieldCooldown) return;
             Plugin.Log.Info("HandleCut");
             
             EnergyCounter.ShieldProgress++;
 
-            if (EnergyCounter.ShieldProgress >= EnergyCounter.ShieldRegen && EnergyCounter.Shield < EnergyCounter.MaxShield) {
-                EnergyCounter.Shield++;
-                EnergyCounter.ShieldProgress = 0;
-            }
-
-            EnergyCounter.Combo++;
-            if (EnergyCounter.Combo > EnergyCounter.MaxCombo) EnergyCounter.MaxCombo = EnergyCounter.Combo;
+            if (EnergyCounter.ShieldProgress < EnergyCounter.ShieldRegen ||
+                EnergyCounter.Shield >= EnergyCounter.MaxShield) return;
+            EnergyCounter.Shield++;
+            EnergyCounter.ShieldProgress = 0;
         }
 
         private static void HandleMiss() {
