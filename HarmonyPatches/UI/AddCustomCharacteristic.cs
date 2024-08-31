@@ -21,8 +21,7 @@ namespace ReBeat.HarmonyPatches.UI {
 
 			var characteristics = new List<IDifficultyBeatmapSet>(level.beatmapLevelData.difficultyBeatmapSets);
 
-			foreach (var difficultyBeatmapSet in level.beatmapLevelData.difficultyBeatmapSets)
-            {
+			foreach (var difficultyBeatmapSet in level.beatmapLevelData.difficultyBeatmapSets) {
 	            var chara = difficultyBeatmapSet.beatmapCharacteristic;
 	            var newCharaID = $"ReBeat_{chara.serializedName}";
 	            var newChara =
@@ -33,8 +32,7 @@ namespace ReBeat.HarmonyPatches.UI {
                 var newSet = new CustomDifficultyBeatmapSet(newChara);
 
                 var beatmaps = new List<CustomDifficultyBeatmap>();
-                foreach (var map in difficultyBeatmapSet.difficultyBeatmaps)
-                {
+                foreach (var map in difficultyBeatmapSet.difficultyBeatmaps) {
 	                CustomDifficultyBeatmap m = (CustomDifficultyBeatmap)map;
 	                beatmaps.Add(new CustomDifficultyBeatmap(map.level, newSet, map.difficulty, map.difficultyRank,
 		                map.noteJumpMovementSpeed, map.noteJumpStartBeatOffset, map.level.beatsPerMinute, m.beatmapSaveData,

@@ -2,15 +2,13 @@
 using HarmonyLib;
 using Polyglot;
 using ReBeat.Utils;
-using UnityEngine;
 
 namespace ReBeat.HarmonyPatches.UI {
     [HarmonyPatch(typeof(MainSystemInit))]
     class RegisterCustomCharacteristics {
 	    [HarmonyPrefix]
 	    [HarmonyPatch(nameof(MainSystemInit.InstallBindings))]
-	    static void RegisterAll(MainSystemInit __instance)
-	    {
+	    static void RegisterAll(MainSystemInit __instance) {
 		    Plugin.Log.Debug("Registering custom characteristics");
 		    var allCharacteristics =
 			    __instance._beatmapCharacteristicCollection._beatmapCharacteristics.Concat(SongCore.Collections
@@ -19,8 +17,7 @@ namespace ReBeat.HarmonyPatches.UI {
 		    var rebeatIcon = SongCore.Utilities.Utils.LoadTextureFromResources("ReBeat.Assets.icon.png");
 		    var transferIcon = SongCore.Utilities.Utils.LoadTextureFromResources("ReBeat.Assets.transfer.png");
 
-		    foreach (var characteristic in allCharacteristics)
-		    {
+		    foreach (var characteristic in allCharacteristics) {
 			    var charIcon = characteristic.icon;
 			    var charTex = charIcon.texture.isReadable ? charIcon.texture : TextureUtils.DuplicateTexture(charIcon);
 			    var combined = SongCore.Utilities.Utils.LoadSpriteFromTexture(

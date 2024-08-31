@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace ReBeat.Utils
-{
-	public static class TextureUtils
-	{
-		public static Texture2D DuplicateTexture(Sprite source)
-		{
+namespace ReBeat.Utils {
+	public static class TextureUtils {
+		public static Texture2D DuplicateTexture(Sprite source) {
 			Plugin.Log.Info($"{source.name}: {source.textureRect}");
 			float width = source.texture.width;
 			float height = source.texture.height;
@@ -39,13 +30,11 @@ namespace ReBeat.Utils
 			return readableText;
 		}
 
-		static Color LerpColor(Color c1, Color c2, float value)
-		{
+		static Color LerpColor(Color c1, Color c2, float value) {
 			return new Color(c1.r + (c2.r - c1.r) * value, c1.g + (c2.g - c1.g) * value, c1.b + (c2.b - c1.b) * value, c1.a + (c2.a - c1.a) * value);
 		}
 
-		static Color[] ScaleTexture(Texture2D texture, int width, int height)
-		{
+		static Color[] ScaleTexture(Texture2D texture, int width, int height) {
 			var origColors = texture.GetPixels();
 			Color[] destColors = new Color[width * height];
 
@@ -53,8 +42,7 @@ namespace ReBeat.Utils
 			float ratioX = (texture.width - 1) / (float)width;
 			float ratioY = (texture.height - 1) / (float)height;
 
-			for (int destY = 0; destY < height; destY++)
-			{
+			for (int destY = 0; destY < height; destY++) {
 				int origY = (int)(destY * ratioY);
 				float yLerp = destY * ratioY - origY;
 
@@ -62,8 +50,7 @@ namespace ReBeat.Utils
 				float yIdx2 = (origY + 1) * origWidth;
 				float yIdxDest = destY * width;
 
-				for (int destX = 0; destX < width; destX++)
-				{
+				for (int destX = 0; destX < width; destX++) {
 					int origX = (int)(destX * ratioX);
 					float xLerp = destX * ratioX - origX;
 					destColors[(int)(yIdxDest + destX)] = LerpColor(
@@ -76,8 +63,7 @@ namespace ReBeat.Utils
 			return destColors;
 		}
 
-		public static Texture2D MergeTextures(Texture2D[] textures)
-		{
+		public static Texture2D MergeTextures(Texture2D[] textures) {
 			const int finalHeight = 512; // Fixed height of 512 pixels
 			int totalWidth = CalculateTotalWidth(textures, finalHeight);
 
@@ -85,20 +71,16 @@ namespace ReBeat.Utils
 			Color[] finalColors = new Color[totalWidth * finalHeight];
 
 			int currentX = 0;
-			foreach (Texture2D texture in textures)
-			{
+			foreach (Texture2D texture in textures) {
 				int width = Mathf.RoundToInt((float)finalHeight * texture.width / texture.height);
 				int height = finalHeight;
 
 				Color[] scaledTextureColors = ScaleTexture(texture, width, height);
 
-				for (int y = 0; y < height; y++)
-				{
-					for (int x = 0; x < width; x++)
-					{
+				for (int y = 0; y < height; y++) {
+					for (int x = 0; x < width; x++) {
 						int destIndex = y * totalWidth + currentX + x;
-						if (destIndex < finalColors.Length)
-						{
+						if (destIndex < finalColors.Length) {
 							finalColors[destIndex] = scaledTextureColors[y * width + x];
 						}
 					}
@@ -113,11 +95,9 @@ namespace ReBeat.Utils
 			return result;
 		}
 
-		static int CalculateTotalWidth(Texture2D[] textures, int targetHeight)
-		{
+		static int CalculateTotalWidth(Texture2D[] textures, int targetHeight) {
 			int totalWidth = 0;
-			foreach (Texture2D texture in textures)
-			{
+			foreach (Texture2D texture in textures) {
 				int width = Mathf.RoundToInt((float)targetHeight * texture.width / texture.height);
 				totalWidth += width;
 			}

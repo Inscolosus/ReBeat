@@ -1,25 +1,17 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
-using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Tags;
 using HMUI;
-using UnityEngine.UI;
-using Zenject;
 using System.Collections.Generic;
 using System.Linq;
-using IPA.Utilities;
 using UnityEngine.EventSystems;
 
-namespace ReBeat.HarmonyPatches.UI
-{
+namespace ReBeat.HarmonyPatches.UI {
 	[HarmonyPatch(typeof(BeatmapCharacteristicSegmentedControlController))]
-	class CharacteristicUI
-	{
+	class CharacteristicUI {
 		[HarmonyPatch(nameof(BeatmapCharacteristicSegmentedControlController.Awake))]
-		static void Postfix(BeatmapCharacteristicSegmentedControlController __instance)
-		{
+		static void Postfix(BeatmapCharacteristicSegmentedControlController __instance) {
 			var transform = __instance.transform.parent as RectTransform;
 			transform.anchorMax = new Vector2(0.9f, 1f);
 
@@ -37,44 +29,37 @@ namespace ReBeat.HarmonyPatches.UI
 		}
 
 		[HarmonyPatch(nameof(BeatmapCharacteristicSegmentedControlController.SetData))]
-		static void Prefix(ref IReadOnlyList<IDifficultyBeatmapSet> difficultyBeatmapSets)
-		{
+		static void Prefix(ref IReadOnlyList<IDifficultyBeatmapSet> difficultyBeatmapSets) {
 			Plugin.Log.Info("Setting data");
 			difficultyBeatmapSets = difficultyBeatmapSets.Where(x => (Config.Instance.Enabled && x.beatmapCharacteristic.serializedName.StartsWith("ReBeat_")) || (!Config.Instance.Enabled && !x.beatmapCharacteristic.serializedName.StartsWith("ReBeat_"))).ToList();
 		}
 
 		[HarmonyPostfix]
 		[HarmonyPatch(nameof(BeatmapCharacteristicSegmentedControlController.SetData))]
-		static void FixWidth(BeatmapCharacteristicSegmentedControlController __instance)
-		{
+		static void FixWidth(BeatmapCharacteristicSegmentedControlController __instance) {
 			Plugin.Log.Info("Setting data");
-			foreach (var image in __instance.GetComponentsInChildren<ImageView>())
-			{
+			foreach (var image in __instance.GetComponentsInChildren<ImageView>()) {
 				image.rectTransform.sizeDelta = new Vector2(10f, 4f);
 			}
 		}
 	}
 
-	class ToggleButton : MonoBehaviour
-	{
+	class ToggleButton : MonoBehaviour {
 		private ClickableImage _clickableImage;
 		
-		void Awake()
-		{
+		void Awake() {
 			_clickableImage = GetComponent<ClickableImage>();
 			_clickableImage.OnClickEvent += Click;
 		}
 
-		void Click(PointerEventData eventData)
-		{
+		void Click(PointerEventData eventData) {
 			Config.Instance.Enabled = !Config.Instance.Enabled;
 			ResetModifiers.GsvcInstance.RefreshContent();
 			var view = transform.parent.parent.GetComponent<StandardLevelDetailViewController>();
 			view._standardLevelDetailView.SetContent(view._beatmapLevel, view._playerDataModel.playerData.lastSelectedBeatmapDifficulty, view._playerDataModel.playerData.lastSelectedBeatmapCharacteristic, view._playerDataModel.playerData);
 		}
 
-		void Update()
-		{
+		void Update() {
 			_clickableImage.DefaultColor = Config.Instance.Enabled ? _clickableImage.HighlightColor : Color.white;
 		}
 	}
