@@ -8,6 +8,7 @@ namespace ReBeat {
         
         internal static GameplayModifiers modifiers;
         internal static bool loadMods;
+        internal static bool showCharacteristics = false;
         private bool _enabled;
         public bool Enabled {
             get => _enabled;
