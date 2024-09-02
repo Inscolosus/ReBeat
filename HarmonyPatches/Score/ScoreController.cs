@@ -21,7 +21,8 @@ namespace ReBeat.HarmonyPatches.Score {
             TotalCutScore = 0;
             TotalNotes = 0;
         }
-        
+
+        //private static string prev = "";
         [HarmonyPostfix]
         [HarmonyPatch("LateUpdate")]
         static void ScoreUpdate(ref int ____multipliedScore, ref int ____modifiedScore,
@@ -32,7 +33,7 @@ namespace ReBeat.HarmonyPatches.Score {
             if (!Config.Instance.Enabled) return;
 
             double acc = ((double)TotalCutScore / ((double)TotalNotes*100d))*100d;
-            int noteCount = SetModifiers.NoteCount;
+            int noteCount = BeamapData.BeatmapData.NoteCount;
             int misses = EnergyController.EnergyCounter.TotalMisses;
             int maxCombo = EnergyController.EnergyCounter.MaxCombo;
 
@@ -40,13 +41,17 @@ namespace ReBeat.HarmonyPatches.Score {
             double maxComboCurve = Math.Pow(TotalNotes / ((1 - Math.Sqrt(0.5)) * maxCombo - TotalNotes), 2) - 1; 
             //const double j = 1d / 1020734678369717893d;
             double accCurve = (19.0444 * Math.Tan((Math.PI / 133d) * acc - 4.22) + 35.5) * 0.01; // rip j
-            
 
             int score = TotalCutScore == 0 || TotalNotes == 0 ? 0 : (int)(1_000_000d * ((missCountCurve * 0.3) + (maxComboCurve * 0.3) + (accCurve * 0.4)) * ((double)TotalNotes / (double)noteCount));
             ____multipliedScore = score;
-            ____immediateMaxPossibleMultipliedScore = (int)(1_000_000d * ((double)TotalNotes / (double)noteCount)); 
-            Plugin.Log.Info($"{AudioLength.Length}");
-            Plugin.Log.Info($"{acc} {noteCount} {misses} {maxCombo} | {missCountCurve} {maxComboCurve} {accCurve} | {score}");
+            ____immediateMaxPossibleMultipliedScore = (int)(1_000_000d * ((double)TotalNotes / (double)noteCount));
+
+            // honestly just gonna leave this in case there's another score issue
+            /*string s = $"{acc} {noteCount} {misses} {maxCombo} | {missCountCurve} {maxComboCurve} {accCurve} | {score}";
+            if (s != prev) {
+                Plugin.Log.Info(s);
+                prev = s;
+            }*/
 
             float totalMultiplier = ____gameplayModifiersModel.GetTotalMultiplier(____gameplayModifierParams, ____gameEnergyCounter.energy);
             ____modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(____multipliedScore, totalMultiplier);

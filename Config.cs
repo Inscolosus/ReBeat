@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
+using UnityEngine;
 
 namespace ReBeat {
 	public class Config {
@@ -8,6 +9,8 @@ namespace ReBeat {
         
         internal static GameplayModifiers modifiers;
         internal static bool loadMods;
+
+        public virtual string HsvConfig { get; set; } = "HitScoreVisualizerConfig_100max.json";
         private bool _enabled;
         public bool Enabled {
             get => _enabled;
@@ -19,9 +22,13 @@ namespace ReBeat {
 
         public virtual bool ShowComboPercent { get; set; } = false;
         public virtual bool UseLeftColor { get; set; } = false;
-        public virtual float ColorRed { get; set; } = 0f;
-        public virtual float ColorGreen { get; set; } = 145f;
-        public virtual float ColorBlue { get; set; } = 255f;
+        public const float FadeEndDistance /*{ get; set; }*/ = 2; // will be a slider setting once I figure out how to fix the arrows
+        public const float FadeDurationDistance /*{ get; set; }*/ = 7;
+        public virtual Color ShieldColor { get; set; } = Color.cyan;
+        public virtual Color LowShieldColor { get; set; } = new Color(0, 0.57f, 1);
+        public virtual Color HealthColor { get; set; } = Color.green;
+        public virtual Color LowHealthColor { get; set; } = Color.yellow;
+        public virtual Color MinHealthColor { get; set; } = Color.red;
         [UseConverter(typeof(ListConverter<bool>))]
         public virtual List<bool> Modifiers { get; set; } = new List<bool>(16);
 

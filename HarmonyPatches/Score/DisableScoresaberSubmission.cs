@@ -1,13 +1,21 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using HarmonyLib;
 
 namespace ReBeat.HarmonyPatches.Score {
-    [HarmonyPatch(typeof(ScoreSaber.Plugin))]
+    [HarmonyPatch]
     class DisableScoresaberSubmission {
-        [HarmonyPatch(nameof(ScoreSaber.Plugin.ScoreSubmission), MethodType.Getter)]
-        static bool Prefix(bool __result) {
-            if (!Config.Instance.Enabled) return true;
-            __result = false;
-            return false;
+        static bool Prepare() {
+            return AppDomain.CurrentDomain.GetAssemblies().Any(asm => asm.GetName().Name == "ScoreSaber");
+        }
+        
+        static MethodBase TargetMethod() {
+            return AccessTools.TypeByName("ScoreSaber.Core.Daemons.UploadDaemon").GetMethod("Five");
+        }
+
+        static bool Prefix() {
+            return !Config.Instance.Enabled;
         }
     }
 }

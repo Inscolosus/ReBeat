@@ -2,9 +2,17 @@
   <checkbox-setting apply-on-change="true" value="ShowComboPercent" text="Show % of max score instead of acc"/>
   <checkbox-setting apply-on-change="true" value="UseLeftColor" text="Use Left Color"/>
   <horizontal>
-    <text text='Depleted Shield Color' align='Center' />
+    <text text='Hidden' align='Center' />
   </horizontal>
-  <slider-setting apply-on-change="true" value="ColorRed" text="Red" min ="0" max="255" increment="1"/>
-  <slider-setting apply-on-change="true" value="ColorGreen" text="Green" min ="0" max="255" increment="1"/>
-  <slider-setting apply-on-change="true" value="ColorBlue" text="Blue" min ="0" max="255" increment="1"/>
+  <!-- very basic, need to integrate with jd, having more trouble with changing hidden values, will come back to this
+  <slider-setting apply-on-change="true" value="FadeEndDistance" text="Fade End Distance" min="2" max="7" increment="0.5" />
+  <slider-setting apply-on-change="true" value="FadeDurationDistance" text="Fade Duration" min="7" max="17" increment="0.5" />-->
+  <horizontal>
+    <text text='Colors' align='Center' />
+  </horizontal>
+  <color-setting apply-on-change="true" value="ShieldColor" text="Shield Color" />
+  <color-setting apply-on-change="true" value="LowShieldColor" text="Depleted Shield Color" />
+  <color-setting apply-on-change="true" value="HealthColor" text="Health Color" />
+  <color-setting apply-on-change="true" value="LowHealthColor" text="Low Health Color" />
+  <color-setting apply-on-change="true" value="MinHealthColor" text="1HP Health Color" />
 </settings-container>

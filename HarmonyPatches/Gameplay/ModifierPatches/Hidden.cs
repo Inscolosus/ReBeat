@@ -11,9 +11,6 @@ namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
         static readonly IPA.Utilities.FieldAccessor<CutoutAnimateEffect, CutoutEffect[]>.Accessor CutoutController =
             IPA.Utilities.FieldAccessor<CutoutAnimateEffect, CutoutEffect[]>.GetAccessor("_cuttoutEffects");
 
-        private const float FadeEndDistance = 2;
-        private const float FadeDistanceDuration = 7;
-
         [HarmonyPostfix]
         [HarmonyPatch("HandleNoteMovementNoteDidMoveInJumpPhase")]
         static void FadeMesh(DisappearingArrowControllerBase<GameNoteController> __instance) {
@@ -21,8 +18,7 @@ namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
             if (!(__instance is DisappearingArrowController dac)) return;
             
             float dist = ArrowControllerController(ref dac).noteMovement.distanceToPlayer;
-
-            if (dist < FadeEndDistance) return;
+            if (dist < Config.FadeEndDistance) return;
 
             var cutoutAnimateEffect = __instance.gameObject.GetComponent<CutoutAnimateEffect>();
             if (cutoutAnimateEffect is null) return;
@@ -32,12 +28,26 @@ namespace ReBeat.HarmonyPatches.Gameplay.ModifierPatches {
             foreach (var cutoutEffect in cutoutEffects) {
                 if (!cutoutEffect.name.Equals("NoteCube")) continue;
 
-                float val = Mathf.Clamp01((dist - FadeEndDistance) / FadeDistanceDuration);
+                float val = Mathf.Clamp01((dist - Config.FadeEndDistance) / Config.FadeDurationDistance);
                 val = val < 0.25 ? 0 : val; // the notes don't fully disappear without this
                 cutoutEffect.SetCutout(1f - val);
 
                 break;
             }
         }
+
+        // TODO: Fix arrow disappearing when changing hidden values
+        /*
+        [HarmonyPrefix]
+        [HarmonyPatch("SetArrowTransparency")]
+        static void FadeArrow(ref float arrowTransparency, DisappearingArrowControllerBase<GameNoteController> __instance) {
+            if (!Config.Instance.Enabled || Modifiers.instance.GhostNotes || Modifiers.instance.DisappearingArrows) return;
+            if (!(__instance is DisappearingArrowController dac)) return;
+            
+            float dist = ArrowControllerController(ref dac).noteMovement.distanceToPlayer;
+            if (dist < Config.Instance.FadeEndDistance) return;
+            float val = Mathf.Clamp01((dist - Config.Instance.FadeEndDistance) / Config.Instance.FadeDurationDistance);
+            arrowTransparency = 1 - val;
+        }*/
     }
 }
