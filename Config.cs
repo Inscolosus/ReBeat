@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
 
@@ -8,14 +9,12 @@ namespace ReBeat {
         
         internal static GameplayModifiers modifiers;
         internal static bool loadMods;
-        internal static bool showCharacteristics = false;
         private bool _enabled;
         public bool Enabled {
             get => _enabled;
             set { 
                 loadMods = !value;
                 _enabled = value;
-                ScoreSaber.Plugin.ScoreSubmission = !_enabled;
             }
         }
 

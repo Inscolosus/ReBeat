@@ -5,11 +5,14 @@ using BeatSaberMarkupLanguage.Tags;
 using HMUI;
 using System.Collections.Generic;
 using System.Linq;
+using SongCore.Data;
 using UnityEngine.EventSystems;
 
 namespace ReBeat.HarmonyPatches.UI {
 	[HarmonyPatch(typeof(BeatmapCharacteristicSegmentedControlController))]
 	class CharacteristicUI {
+		internal static bool IsCustomLevel { get; set; }
+
 		[HarmonyPatch(nameof(BeatmapCharacteristicSegmentedControlController.Awake))]
 		static void Postfix(BeatmapCharacteristicSegmentedControlController __instance) {
 			var transform = __instance.transform.parent as RectTransform;
@@ -30,6 +33,7 @@ namespace ReBeat.HarmonyPatches.UI {
 
 		[HarmonyPatch(nameof(BeatmapCharacteristicSegmentedControlController.SetData))]
 		static void Prefix(ref IReadOnlyList<IDifficultyBeatmapSet> difficultyBeatmapSets) {
+			if (!IsCustomLevel) return;
 			Plugin.Log.Info("Setting data");
 			difficultyBeatmapSets = difficultyBeatmapSets.Where(x => (Config.Instance.Enabled && x.beatmapCharacteristic.serializedName.StartsWith("ReBeat_")) || (!Config.Instance.Enabled && !x.beatmapCharacteristic.serializedName.StartsWith("ReBeat_"))).ToList();
 		}
@@ -37,6 +41,7 @@ namespace ReBeat.HarmonyPatches.UI {
 		[HarmonyPostfix]
 		[HarmonyPatch(nameof(BeatmapCharacteristicSegmentedControlController.SetData))]
 		static void FixWidth(BeatmapCharacteristicSegmentedControlController __instance) {
+			if (!IsCustomLevel) return;
 			Plugin.Log.Info("Setting data");
 			foreach (var image in __instance.GetComponentsInChildren<ImageView>()) {
 				image.rectTransform.sizeDelta = new Vector2(10f, 4f);
@@ -53,13 +58,44 @@ namespace ReBeat.HarmonyPatches.UI {
 		}
 
 		void Click(PointerEventData eventData) {
+			if (!CharacteristicUI.IsCustomLevel) return;
+			
+			var view = transform.parent.parent.GetComponent<StandardLevelDetailViewController>();
 			Config.Instance.Enabled = !Config.Instance.Enabled;
 			ResetModifiers.GsvcInstance.RefreshContent();
-			var view = transform.parent.parent.GetComponent<StandardLevelDetailViewController>();
+			
+			var extraData = SongCore.Collections.RetrieveExtraSongData(SongCore.Utilities.Hashing.GetCustomLevelHash((CustomBeatmapLevel)view._beatmapLevel));
+			if (extraData != null) CopyExtraSongData(view, extraData); 
+			
 			view._standardLevelDetailView.SetContent(view._beatmapLevel, view._playerDataModel.playerData.lastSelectedBeatmapDifficulty, view._playerDataModel.playerData.lastSelectedBeatmapCharacteristic, view._playerDataModel.playerData);
+			
+			var charController = view._standardLevelDetailView._beatmapCharacteristicSegmentedControlController;
+			view._standardLevelDetailView.HandleBeatmapCharacteristicSegmentedControlControllerDidSelectBeatmapCharacteristic(charController, charController.selectedBeatmapCharacteristic);
+		}
+
+		private static void CopyExtraSongData(StandardLevelDetailViewController view, ExtraSongData extraData) {
+			if (Config.Instance.Enabled) {
+				var rebeatEnabledChars = new List<string>();
+				foreach (var diffSet in view._beatmapLevel.beatmapLevelData.difficultyBeatmapSets) {
+					string charName = diffSet.beatmapCharacteristic.serializedName; 
+					if (charName.StartsWith("ReBeat_")) rebeatEnabledChars.Add(charName.Substring(7));
+				}
+
+				foreach (var diffData in extraData._difficulties) {
+					if (!rebeatEnabledChars.Contains(diffData._beatmapCharacteristicName)) continue;
+					diffData._beatmapCharacteristicName = $"ReBeat_{diffData._beatmapCharacteristicName}";
+				}
+			}
+			else {
+				foreach (var diffData in extraData._difficulties) {
+					if (diffData._beatmapCharacteristicName.StartsWith("ReBeat_"))
+						diffData._beatmapCharacteristicName = diffData._beatmapCharacteristicName.Substring(7);
+				}
+			}
 		}
 
 		void Update() {
+			_clickableImage.enabled = CharacteristicUI.IsCustomLevel;
 			_clickableImage.DefaultColor = Config.Instance.Enabled ? _clickableImage.HighlightColor : Color.white;
 		}
 	}
