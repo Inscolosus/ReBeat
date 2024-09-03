@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -69,10 +70,14 @@ namespace ReBeat.HarmonyPatches.UI {
 	    [HarmonyPrefix]
 	    [HarmonyPatch("GetDifficultyBeatmap")]
 	    static void ResetCharacteristic(ref BeatmapKey beatmapKey, FileSystemBeatmapLevelData __instance) {
-		    // TODO: this still does not work, should be the last thing to get characteristics working tho
 		    if (!beatmapKey.beatmapCharacteristic.serializedName.StartsWith("ReBeat_")) return;
+
+		    Type expectedType = typeof(FileSystemBeatmapLevelData);
+		    Type type = __instance.GetType() == expectedType ? expectedType : __instance.GetType().BaseType;
+		    if (type != expectedType) Plugin.Log.Error($"Unrecognized filesystem data type {__instance.GetType()} {__instance.GetType().Assembly.FullName}");
+		    
 		    var difficultyBeatmaps =
-			    (Dictionary<(BeatmapCharacteristicSO, BeatmapDifficulty), FileDifficultyBeatmap>)__instance.GetType()
+			    (Dictionary<(BeatmapCharacteristicSO, BeatmapDifficulty), FileDifficultyBeatmap>)type
 				    .GetField("_difficultyBeatmaps", BindingFlags.Instance | BindingFlags.NonPublic)
 				    .GetValue(__instance);
 		    
