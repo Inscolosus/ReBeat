@@ -25,7 +25,6 @@ namespace ReBeat.HarmonyPatches.UI {
             if (!level.GetBeatmapKeys().Any()) return;
             if (level.GetBeatmapKeys().Any(x => x.beatmapCharacteristic.serializedName.Contains("ReBeat"))) return;
 
-            var charIds = new List<string>();
             var newKeys = new Dictionary<(BeatmapCharacteristicSO, BeatmapDifficulty), BeatmapBasicData>();
             foreach (var key in level.GetBeatmapKeys()) {
 	            newKeys.Add((key.beatmapCharacteristic, key.difficulty), level.GetDifficultyBeatmapData(key.beatmapCharacteristic, key.difficulty));
@@ -38,7 +37,6 @@ namespace ReBeat.HarmonyPatches.UI {
 		            SongCore.Collections.customCharacteristics.FirstOrDefault(x => x.serializedName == newCharaId);
 	            if (newChara is null) continue;
 	            if (firstChar is null) firstChar = newChara;
-	            charIds.Add(newCharaId);
 
 	            foreach (var diff in level.GetDifficulties(chara)) {
 		            newKeys.Add((newChara, diff), level.GetDifficultyBeatmapData(chara, diff));
@@ -55,13 +53,6 @@ namespace ReBeat.HarmonyPatches.UI {
             
             if (!Config.Instance.Enabled || firstChar is null) return;
             defaultBeatmapCharacteristic = firstChar;
-
-			var extraData = SongCore.Collections.RetrieveExtraSongData(SongCore.Utilities.Hashing.GetCustomLevelHash(level));
-			if (extraData is null) return;
-			foreach (var diffData in extraData._difficulties) {
-				if (!charIds.Contains($"ReBeat_{diffData._beatmapCharacteristicName}")) continue;
-				diffData._beatmapCharacteristicName = $"ReBeat_{diffData._beatmapCharacteristicName}";
-			}
         }
     }
     

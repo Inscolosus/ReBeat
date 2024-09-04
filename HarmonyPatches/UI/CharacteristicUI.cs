@@ -64,36 +64,12 @@ namespace ReBeat.HarmonyPatches.UI {
 			Config.Instance.Enabled = !Config.Instance.Enabled;
 			ResetModifiers.GsvcInstance.RefreshContent();
 			
-			var extraData = SongCore.Collections.RetrieveExtraSongData(SongCore.Utilities.Hashing.GetCustomLevelHash(view._beatmapLevel));
-			if (extraData != null) CopyExtraSongData(view, extraData);
-
 			view._standardLevelDetailView.SetContent(view._beatmapLevel, view._allowedBeatmapDifficultyMask,
 				view._notAllowedCharacteristics, view._playerDataModel.playerData.lastSelectedBeatmapDifficulty,
 				view._playerDataModel.playerData.lastSelectedBeatmapCharacteristic, view._playerDataModel.playerData);
 			
 			var charController = view._standardLevelDetailView._beatmapCharacteristicSegmentedControlController;
 			view._standardLevelDetailView.HandleBeatmapCharacteristicSegmentedControlControllerDidSelectBeatmapCharacteristic(charController, charController.selectedBeatmapCharacteristic);
-		}
-
-		private static void CopyExtraSongData(StandardLevelDetailViewController view, ExtraSongData extraData) {
-			if (Config.Instance.Enabled) {
-				var rebeatEnabledChars = new List<string>();
-				foreach (var chara in view._beatmapLevel.GetCharacteristics()) {
-					string charName = chara.serializedName; 
-					if (charName.StartsWith("ReBeat_")) rebeatEnabledChars.Add(charName.Substring(7));
-				}
-
-				foreach (var diffData in extraData._difficulties) {
-					if (!rebeatEnabledChars.Contains(diffData._beatmapCharacteristicName)) continue;
-					diffData._beatmapCharacteristicName = $"ReBeat_{diffData._beatmapCharacteristicName}";
-				}
-			}
-			else {
-				foreach (var diffData in extraData._difficulties) {
-					if (diffData._beatmapCharacteristicName.StartsWith("ReBeat_"))
-						diffData._beatmapCharacteristicName = diffData._beatmapCharacteristicName.Substring(7);
-				}
-			}
 		}
 
 		void Update() {

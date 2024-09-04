@@ -9,7 +9,12 @@ namespace ReBeat.Utils {
 			float cropWidth = source.textureRect.width;
 			float cropHeight = source.textureRect.height;
 			float cropX = source.textureRect.x;
+
+#if BS1_37_1
 			float cropY = source.texture.height - source.textureRect.y - cropHeight;
+#else
+			float cropY = source.textureRect.y;
+#endif
 			RenderTexture renderTex = RenderTexture.GetTemporary(
 				(int)width,
 				(int)height,
