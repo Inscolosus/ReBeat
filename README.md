@@ -1,5 +1,25 @@
 ﻿# ReBeat
 ReBeat is a Beat Saber overhaul mod created by Inscolosus and Astrella to put the game in a more competitively viable and fun state! It features a new scoring system, reworked game mechanics including a new health system, modifiers, and more.
+- [Join our Discord](https://discord.gg/gqTQcS3fGj)
+## How To Use
+- Download the zip for your version from the [releases](https://github.com/Inscolosus/ReBeat/releases) and extract it to your Beat Saber folder
+- When you select a song there will be a ReBeat icon next to the characteristics, click it to enable ReBeat
+
+![rebeat](./Assets/rebeat-disabled.jpg)
+
+![rebeat enabled](./Assets/rebeat-enabled.jpg)
+- With ReBeat enabled the modifiers panel will disappear, to use modifiers select the Modifiers menu under the Mods section
+
+![rebeat modifiers](./Assets/rebeat-modifiers.jpg)
+- Leaderboards for ReBeat are supported by [BeatLeader](https://beatleader.net); you will need the [BeatLeader Mod](https://github.com/BeatLeader/beatleader-mod) if you want to submit scores
+- ReBeat will automatically use a new [HitScoreVisualizer](https://github.com/ErisApps/HitScoreVisualizer) config, by default it looks for one named `HitScoreVisualizerConfig_100max.json` (included in release zip). This can be changed in the mod's userdata (`UserData/ReBeat.json`)
+- ReBeat currently only supports custom songs, although this may change in the future
+
+![rebeat disabled](./Assets/rebeat-ostsong.jpg)
+## Dependencies
+- BSIPA, SongCore, and BSML
+
+You likely already have these, if not they can be installed with [ModAssistant](https://github.com/Assistant/ModAssistant/releases/latest) or downloaded from [BeatMods](https://beatmods.com/#/mods)
 ## Changes
 ### Scoring
 The maximum cut score is now 100, consisting of:

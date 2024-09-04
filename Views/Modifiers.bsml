@@ -28,15 +28,15 @@
     </horizontal>
     <horizontal>
         <vertical min-width="30" >
-            <modifier value="NoArrows" bind-value="true" on-change="SetNoArrows" text="No Arrows" src="#NoArrowsIcon" />
+            <modifier value="NoArrows" bind-value="true" on-change="SetNoArrows" text="No Arrows (-100%)" src="#NoArrowsIcon" />
             <modifier value="GhostNotes" bind-value="true" on-change="SetGhostNotes" text="Ghost Notes" src="#GhostNotes" />
         </vertical>
         <vertical min-width="30" >
-            <modifier value="NoBombs" bind-value="true" on-change="SetNoBombs" text="No Bombs" src="#NoBombsIcon" />
+            <modifier value="NoBombs" bind-value="true" on-change="SetNoBombs" text="No Bombs (-40%)" src="#NoBombsIcon" />
             <modifier value="DisappearingArrows" bind-value="true" on-change="SetDisappearingArrows" text="Disappearing Arrows" src="#DisappearingArrows" />
         </vertical>
         <vertical min-width="30" >
-            <modifier value="NoWalls" bind-value="true" on-change="SetNoWalls" text="No Walls" src="#NoObstaclesIcon" />
+            <modifier value="NoWalls" bind-value="true" on-change="SetNoWalls" text="No Walls (-40%)" src="#NoObstaclesIcon" />
             <modifier value="SmallNotes" bind-value="true" on-change="SetSmallNotes" text="Small Notes" src="#SmallNotesIcon" />
         </vertical>
     </horizontal>

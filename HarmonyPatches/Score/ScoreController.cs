@@ -53,6 +53,10 @@ namespace ReBeat.HarmonyPatches.Score {
             }*/
 
             float totalMultiplier = ____gameplayModifiersModel.GetTotalMultiplier(____gameplayModifierParams, ____gameEnergyCounter.energy);
+            if (totalMultiplier <= 0) {
+                ____multipliedScore = 0;
+                ____immediateMaxPossibleMultipliedScore = 0;
+            }
             ____modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(____multipliedScore, totalMultiplier);
             ____immediateMaxPossibleModifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(____immediateMaxPossibleMultipliedScore, totalMultiplier);
 
