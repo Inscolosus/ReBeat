@@ -64,38 +64,20 @@ namespace ReBeat.HarmonyPatches.UI {
 			Config.Instance.Enabled = !Config.Instance.Enabled;
 			ResetModifiers.GsvcInstance.RefreshContent();
 			
-			var extraData = SongCore.Collections.RetrieveExtraSongData(SongCore.Utilities.Hashing.GetCustomLevelHash((CustomBeatmapLevel)view._beatmapLevel));
-			if (extraData != null) CopyExtraSongData(view, extraData); 
-			
 			view._standardLevelDetailView.SetContent(view._beatmapLevel, view._playerDataModel.playerData.lastSelectedBeatmapDifficulty, view._playerDataModel.playerData.lastSelectedBeatmapCharacteristic, view._playerDataModel.playerData);
 			
 			var charController = view._standardLevelDetailView._beatmapCharacteristicSegmentedControlController;
 			view._standardLevelDetailView.HandleBeatmapCharacteristicSegmentedControlControllerDidSelectBeatmapCharacteristic(charController, charController.selectedBeatmapCharacteristic);
 		}
 
-		private static void CopyExtraSongData(StandardLevelDetailViewController view, ExtraSongData extraData) {
-			if (Config.Instance.Enabled) {
-				var rebeatEnabledChars = new List<string>();
-				foreach (var diffSet in view._beatmapLevel.beatmapLevelData.difficultyBeatmapSets) {
-					string charName = diffSet.beatmapCharacteristic.serializedName; 
-					if (charName.StartsWith("ReBeat_")) rebeatEnabledChars.Add(charName.Substring(7));
-				}
-
-				foreach (var diffData in extraData._difficulties) {
-					if (!rebeatEnabledChars.Contains(diffData._beatmapCharacteristicName)) continue;
-					diffData._beatmapCharacteristicName = $"ReBeat_{diffData._beatmapCharacteristicName}";
-				}
-			}
-			else {
-				foreach (var diffData in extraData._difficulties) {
-					if (diffData._beatmapCharacteristicName.StartsWith("ReBeat_"))
-						diffData._beatmapCharacteristicName = diffData._beatmapCharacteristicName.Substring(7);
-				}
-			}
-		}
-
 		void Update() {
-			_clickableImage.enabled = CharacteristicUI.IsCustomLevel;
+			if (!CharacteristicUI.IsCustomLevel) {
+				_clickableImage.DefaultColor = Color.red;
+				_clickableImage.HighlightColor = Color.red;
+				return;
+			}
+
+			_clickableImage.HighlightColor = new Color(0.6f, 0.8f, 1);
 			_clickableImage.DefaultColor = Config.Instance.Enabled ? _clickableImage.HighlightColor : Color.white;
 		}
 	}

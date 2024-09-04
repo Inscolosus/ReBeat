@@ -158,6 +158,7 @@
     <Compile Include="HarmonyPatches\UI\EnergyUI.cs" />
     <Compile Include="HarmonyPatches\UI\Modifiers.cs" />
     <Compile Include="HarmonyPatches\UI\RelativeScore.cs" />
+    <Compile Include="HarmonyPatches\UI\ReplaceExtraSongData.cs" />
     <Compile Include="HarmonyPatches\UI\ResetModifiers.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
