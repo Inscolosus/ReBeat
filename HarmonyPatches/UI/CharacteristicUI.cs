@@ -5,7 +5,6 @@ using BeatSaberMarkupLanguage.Tags;
 using HMUI;
 using System.Collections.Generic;
 using System.Linq;
-using SongCore.Data;
 using UnityEngine.EventSystems;
 
 namespace ReBeat.HarmonyPatches.UI {
@@ -73,7 +72,13 @@ namespace ReBeat.HarmonyPatches.UI {
 		}
 
 		void Update() {
-			_clickableImage.enabled = CharacteristicUI.IsCustomLevel;
+			if (!CharacteristicUI.IsCustomLevel) {
+				_clickableImage.DefaultColor = Color.red;
+				_clickableImage.HighlightColor = Color.red;
+				return;
+			}
+
+			_clickableImage.HighlightColor = new Color(0.6f, 0.8f, 1);
 			_clickableImage.DefaultColor = Config.Instance.Enabled ? _clickableImage.HighlightColor : Color.white;
 		}
 	}
