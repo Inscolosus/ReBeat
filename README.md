@@ -57,7 +57,7 @@ The number of notes required to regenerate a segment of shield is determined by 
 [![nps curve](./Assets/npscurve.jpg)](https://www.desmos.com/calculator/y3kubp0qxd)
 ### Other
 - Cut angle tolerance has been reduced to 90° (originally 120°)
-- Note hitbox is much smaller (0.5m³ instead of 0.8m x 0.5m x 1m)
+- Note hitbox is much smaller (0.5m x 0.5m x 0.7m instead of 0.8m x 0.5m x 1m)
 - Removed wrong color bad cuts
 ### Brand New Modifiers
 - One HP
@@ -65,7 +65,7 @@ The number of notes required to regenerate a segment of shield is determined by 
 - Pro Mode
   - Increases NJS
   - Decreases cut angle tolerance to 75°
-  - Decreases note hitbox size (0.45m³)
+  - Decreases note hitbox size (0.45m x 0.45m x 0.6m)
   - Harsher accuracy [(see table)](#the-size-of-these-sectors-is-changed-by-some-modifiers)
 - Easy Mode
   - Increases cut angle tolerance to 105°
