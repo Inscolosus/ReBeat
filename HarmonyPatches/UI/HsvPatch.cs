@@ -17,7 +17,12 @@ namespace ReBeat.HarmonyPatches.UI {
         static MethodBase TargetMethod() {
             var judgmentService = AccessTools.TypeByName("HitScoreVisualizer.Services.JudgmentService");
             return AccessTools.Constructor(judgmentService,
-                new[] { AccessTools.TypeByName("HitScoreVisualizer.Services.ConfigProvider") });
+                       new[] { AccessTools.TypeByName("HitScoreVisualizer.Services.ConfigProvider") }) ??
+                   AccessTools.Constructor(judgmentService,
+                       new[] {
+                           AccessTools.TypeByName("HitScoreVisualizer.Services.ConfigProvider"),
+                           AccessTools.TypeByName("SiraUtil.Logging.SiraLog")
+                       });
         }
 
         [HarmonyPostfix]
